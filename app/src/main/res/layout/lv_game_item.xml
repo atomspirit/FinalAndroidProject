@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/fillPrimary">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/cimGameImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:src="@drawable/game_item_bg_01" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:id="@+id/tvGameTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Game 1"
+            android:fontFamily="@font/alegreya_sans"
+            android:textColor="@color/primary"
+            android:textSize="40sp"/>
+        <TextView
+            android:id="@+id/tvGameDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="A very long game Description"
+            android:fontFamily="@font/alegreya_sans"
+            android:textColor="@color/secondary"
+            android:textSize="25sp"/>
+
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
