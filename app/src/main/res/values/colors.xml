@@ -7,4 +7,5 @@
     <color name="secondary">#AAAAAA</color>
     <color name="fillPrimary">#2D2D2D</color>
     <color name="fillSecondary">#424242</color>
+    <color name="transparent">#00000000</color>
 </resources>

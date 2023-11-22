@@ -20,6 +20,14 @@ public class GameActivity extends AppCompatActivity {
         games.add(new Game("Game 1", "Description 1", R.drawable.game_item_bg_01));
         games.add(new Game("Game 2", "Description 2", R.drawable.game_item_bg_01));
         games.add(new Game("Game 3", "Description 3", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 4", "Description 4", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 5", "Description 5", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 6", "Description 6", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 7", "Description 7", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 7", "Description 7", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 7", "Description 7", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 7", "Description 7", R.drawable.game_item_bg_01));
+        games.add(new Game("Game 7", "Description 7", R.drawable.game_item_bg_01));
 
         MyGameAdapter adapter = new MyGameAdapter(this, games);
         listView.setAdapter(adapter);
