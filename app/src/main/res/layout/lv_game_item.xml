@@ -11,8 +11,8 @@
         android:background="@color/fillPrimary">
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cimGameImage"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="55sp"
+            android:layout_height="55sp"
             android:src="@drawable/game_item_bg_01"
             android:layout_gravity="center"/>
 
@@ -48,8 +48,9 @@
     </LinearLayout>
 
     <View
-        android:layout_width="245dp"
-        android:layout_height="1dp"
+        android:layout_width="335sp"
+
+        android:layout_height="1sp"
         android:layout_gravity="end"
         android:layout_marginTop="25dp"
         android:background="#393838" />
