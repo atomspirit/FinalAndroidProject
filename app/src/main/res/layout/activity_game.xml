@@ -21,7 +21,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/ivIcon"
             android:layout_width="36sp"
             android:layout_height="36sp"
 
@@ -42,11 +42,11 @@
             android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/ivIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivIcon2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
