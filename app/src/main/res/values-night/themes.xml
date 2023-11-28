@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.FinalProject" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <item name="colorPrimary">@color/fillPrimary</item>
+        <item name="colorPrimary">@color/action</item>
         <item name="colorPrimaryContainer">@color/fillPrimary</item>
         <item name="colorSecondaryContainer">@color/fillSecondary</item>
         <item name="colorSecondary">@color/secondary</item>
