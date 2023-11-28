@@ -20,12 +20,12 @@
         <Constraint
             android:id="@+id/explosionView"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="1000dp"
-            android:layout_height="1000dp"
+            android:layout_width="800dp"
+            android:layout_height="800dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintVertical_bias="0.81" />
+            motion:layout_constraintVertical_bias="0.6" />
         <Constraint
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="wrap_content"
