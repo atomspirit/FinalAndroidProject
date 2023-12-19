@@ -3,9 +3,11 @@
     <style name="Base.Theme.FinalProject" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/action</item>
+        <item name="colorOnPrimary">@color/fillPrimary</item>
         <item name="colorPrimaryContainer">@color/fillPrimary</item>
         <item name="colorSecondaryContainer">@color/fillSecondary</item>
         <item name="colorSecondary">@color/secondary</item>
         <item name="colorAccent">@color/action</item>
+        <item name="fontFamily">@font/alegreya_sans</item>
     </style>
 </resources>
