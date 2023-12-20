@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView btnGame;
     private TextView btnOptions;
     private TextView btnProfile;
+    private TextView activeTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +25,19 @@ public class MainActivity extends AppCompatActivity {
         btnOptions = findViewById(R.id.btnOptions);
         btnProfile = findViewById(R.id.btnProfile);
 
+
+
         // set default view to game
         switchFragment(new GameFragment());
         btnGame.setTextColor(getResources().getColor(R.color.action));
         btnGame.setPaintFlags(btnGame.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        activeTab = btnGame;
 
         // Set click listeners for each tab
         btnGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (v.getId() == activeTab.getId()) return;
                 switchFragment(new GameFragment());
                 setTabOn(btnGame);
                 setTabOff(btnOptions);
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         btnOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (v.getId() == activeTab.getId()) return;
                 switchFragment(new OptionsFragment());
                 setTabOn(btnOptions);
                 setTabOff(btnGame);
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (v.getId() == activeTab.getId()) return;
                 switchFragment(new ProfileFragment());
                 setTabOn(btnProfile);
                 setTabOff(btnOptions);
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setTabOn(TextView tab)
     {
+        activeTab = tab;
         tab.setTextColor(getResources().getColor(R.color.action));
         tab.setPaintFlags(tab.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }

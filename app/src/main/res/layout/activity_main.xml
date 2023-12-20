@@ -33,7 +33,7 @@
             android:gravity="center"
             android:text="Options"
             android:textColor="@color/secondary"
-            android:textSize="12sp"/>
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/btnGame"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:text="Games"
             android:textColor="@color/action"
-            android:textSize="12sp"/>
+            android:textSize="20sp"/>
 
 
         <TextView
@@ -54,7 +54,7 @@
             android:gravity="center"
             android:text="Profile"
             android:textColor="@color/secondary"
-            android:textSize="12sp"/>
+            android:textSize="20sp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
