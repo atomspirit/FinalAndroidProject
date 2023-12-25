@@ -1,22 +1,24 @@
-package com.example.finalproject;
+package com.example.finalproject.Activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+
 import androidx.fragment.app.Fragment;
 
-public class OptionsFragment extends Fragment {
+import com.example.finalproject.R;
 
-    public OptionsFragment()
-    {
+public class ActiveGameFragment extends Fragment {
+
+    public ActiveGameFragment() {
         // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_options, container, false);
+        return inflater.inflate(R.layout.activity_game, container, false);
     }
 }

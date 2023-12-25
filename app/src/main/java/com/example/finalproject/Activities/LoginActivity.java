@@ -1,15 +1,14 @@
-package com.example.finalproject;
+package com.example.finalproject.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
+import com.example.finalproject.R;
 
 public class LoginActivity extends AppCompatActivity {
 

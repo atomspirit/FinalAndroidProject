@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/fillPrimary"
     android:orientation="vertical"
-    tools:context=".OptionsActivity">
+    tools:context=".Activities.OptionsActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".GameActivity"
+    tools:context=".Activities.GameActivity"
     android:background="@color/fillPrimary"
     >
 
@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/ivIcon2"
+            android:id="@+id/ivAddGame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
