@@ -1,9 +1,11 @@
 package com.example.finalproject.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -12,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Game;
 import com.example.finalproject.MyGameAdapter;
 import com.example.finalproject.R;
@@ -38,7 +41,7 @@ public class GameFragment extends Fragment{
 
 
 
-    public void initComponent(View view)
+    private void initComponent(View view)
     {
         games = new ArrayList<Game>();
         listView =  view.findViewById(R.id.lvGameList);
@@ -51,6 +54,7 @@ public class GameFragment extends Fragment{
                 addGame(1);
             }
         });
+        setOnItemClickListView();
     }
 
     private void addGame(int index)
@@ -59,4 +63,16 @@ public class GameFragment extends Fragment{
         MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
         listView.setAdapter(adapter);
     }
+    private void setOnItemClickListView() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+                //intent.putExtra(); using position find the database id and pass it
+                getActivity().startActivity(intent);
+            }
+        });
+    }
+
+
 }
