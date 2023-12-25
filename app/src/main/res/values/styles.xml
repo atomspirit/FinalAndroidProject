@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FinalProject" parent="@style/Base.Theme.FinalProject">
+        <item name="clickable_icon_bg">@color/fillPrimary</item>
+    </style>
+    <style name="Theme.FinalProject.Dark" parent="@style/Base.Theme.FinalProject.Dark">
+        <item name="clickable_icon_bg">@color/fillPrimary</item>
+    </style>
+</resources>

@@ -8,6 +8,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.finalproject.Game;
@@ -30,13 +32,19 @@ public class GameFragment extends Fragment{
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.activity_game, container, false);
         initComponent(v);
+
         return v;
     }
 
+
+
     public void initComponent(View view)
     {
-        listView = view.findViewById(R.id.lvGameList);
-        ivAddGame = view.findViewById(R.id.ivAddGame);
+        games = new ArrayList<Game>();
+        listView =  view.findViewById(R.id.lvGameList);
+
+        ivAddGame = view.findViewById(R.id.ibAddGame);
+        if (ivAddGame == null)Toast.makeText(getActivity().getApplication(), "null arg!", Toast.LENGTH_LONG).show();
         ivAddGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +55,6 @@ public class GameFragment extends Fragment{
 
     private void addGame(int index)
     {
-        Toast.makeText(getActivity(),"added game" ,Toast.LENGTH_LONG);
         games.add(new Game("Game " + index, "Description " + index, R.drawable.game_item_bg_01));
         MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
         listView.setAdapter(adapter);
