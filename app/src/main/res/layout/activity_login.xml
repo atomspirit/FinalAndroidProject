@@ -58,14 +58,25 @@
 
     <View
         android:id="@+id/explosionView"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:background="@drawable/bg_explosion"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
     </View>
+    <ImageView
+        android:id="@+id/ivIcon"
+        android:layout_width="60sp"
+        android:layout_height="60sp"
+
+        android:src="@drawable/ic_bomb"
+        android:tint="@color/action"
+        app:layout_constraintBottom_toBottomOf="@id/explosionView"
+        app:layout_constraintStart_toStartOf="@id/explosionView"
+        app:layout_constraintTop_toTopOf="@id/explosionView"
+        app:layout_constraintEnd_toEndOf="@id/explosionView"/>
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
