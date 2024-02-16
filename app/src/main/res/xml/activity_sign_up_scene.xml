@@ -9,18 +9,17 @@
         motion:duration="1000">
        <KeyFrameSet>
        </KeyFrameSet>
-        <OnClick motion:targetId="@id/btSignIn" />
+        <OnClick motion:targetId="@id/btSignUp" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
-
         <Constraint
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            motion:layout_constraintTop_toBottomOf="@+id/btSignIn"
+            motion:layout_constraintTop_toBottomOf="@+id/btSignUp"
             motion:layout_constraintHorizontal_bias="0.5"
             android:layout_marginTop="10dp"
-            android:id="@+id/tvMoveToSignUp"
+            android:id="@+id/tvMoveToSignIn"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent" />
     </ConstraintSet>

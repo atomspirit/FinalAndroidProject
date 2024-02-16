@@ -14,8 +14,7 @@ import com.example.finalproject.R;
 
 public class SignInActivity extends AppCompatActivity {
 
-    Button btLogin;
-    EditText etUsername;
+    EditText etUsername, etPassword;
     TextView tvMoveToSignUp;
     MotionLayout motionLayout;
 
@@ -51,6 +50,8 @@ public class SignInActivity extends AppCompatActivity {
     }
     private void initComponents()
     {
+        etPassword = findViewById(R.id.etPassword);
+        etUsername = findViewById(R.id.etUsername);
         motionLayout = findViewById(R.id.motion_layout_login);
         tvMoveToSignUp = findViewById(R.id.tvMoveToSignUp);
         tvMoveToSignUp.setOnClickListener(new View.OnClickListener() {
