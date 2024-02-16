@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fillPrimary"
-    app:layoutDescription="@xml/activity_login_scene2"
-    tools:context=".Activities.LoginActivity"
+    app:layoutDescription="@xml/activity_sign_in_scene"
+    tools:context=".Activities.SignInActivity"
     android:id="@+id/motion_layout_login">
 
     <EditText
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etUsername" />
 
     <Button
-        android:id="@+id/btLogin"
+        android:id="@+id/btSignIn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="70dp"
@@ -55,6 +55,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+    <TextView
+        android:id="@+id/tvMoveToSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Up?"
+        android:layout_marginTop="6dp"
+        android:ems="10"
+        android:fontFamily="@font/alegreya_sans"
+        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/btSignIn"
+        />
 
     <View
         android:id="@+id/explosionView"
