@@ -1,22 +1,32 @@
 package com.example.finalproject.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignUpActivity extends AppCompatActivity {
 
     EditText etUsername, etPassword, etEmail;
     TextView tvMoveToSignIn;
     MotionLayout motionLayout;
+    Button btSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,50 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            }
+        });
+        btSignUp = findViewById(R.id.btSignUp);
+        btSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //signUp();
+            }
+        });
+    }
+
+    private void signUp()
+    {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app//");
+        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+
+        String username = etUsername.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+
+        //User user = User(password,username,email);
+
+        Query query = databaseReference.orderByChild("username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                etUsername.setError(null);
+                if(snapshot.exists()){
+                    etUsername.setError("Username already exists");
+                    etUsername.requestFocus();
+                }
+                else {
+                    //databaseReference.child(username).setValue(user);
+                    Toast.makeText(getApplicationContext(),"Register Successfully",Toast.LENGTH_SHORT).show();
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
+                    SharedPreferences.Editor editor=sharedPreferences.edit();
+                    editor.putString("username",username);
+                    editor.apply();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
