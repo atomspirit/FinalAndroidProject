@@ -1,6 +1,9 @@
 package com.example.finalproject.Fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +29,8 @@ public class GameFragment extends Fragment{
     ImageView ivAddGame;
     ListView listView;
     ArrayList<Game> games;
+    Dialog createJoinGame;
+
     public GameFragment() {
         // Required empty public constructor
     }
@@ -46,15 +51,17 @@ public class GameFragment extends Fragment{
         games = new ArrayList<Game>();
         listView =  view.findViewById(R.id.lvGameList);
 
-        ivAddGame = view.findViewById(R.id.ibAddGame);
+        ivAddGame = view.findViewById(R.id.ivAddGame);
         if (ivAddGame == null)Toast.makeText(getActivity().getApplication(), "null arg!", Toast.LENGTH_LONG).show();
         ivAddGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addGame(1);
+                showPopup(v);
             }
         });
         setOnItemClickListView();
+        createJoinGame = new Dialog(view.getContext());
+
     }
 
     private void addGame(int index)
@@ -72,6 +79,13 @@ public class GameFragment extends Fragment{
                 getActivity().startActivity(intent);
             }
         });
+    }
+    private void showPopup(View v)
+    {
+        createJoinGame.setContentView(R.layout.dialog_create_join_game);
+        createJoinGame.show();
+        addGame(1);
+        createJoinGame.setCancelable(true);
     }
 
 

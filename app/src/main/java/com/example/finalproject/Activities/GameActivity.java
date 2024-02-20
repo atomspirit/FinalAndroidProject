@@ -2,6 +2,9 @@ package com.example.finalproject.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,15 +23,16 @@ public class GameActivity extends AppCompatActivity {
     ImageView ivAddGame;
     ListView listView;
     ArrayList<Game> games;
+    Dialog createJoinGame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        ivAddGame = findViewById(R.id.ivIcon2);
+        ivAddGame = findViewById(R.id.ivAddGame);
         listView = findViewById(R.id.lvGameList);
 
-
+        createJoinGame = new Dialog(this);
 
         games = new ArrayList<>();// populate your list of games here
 
@@ -36,8 +40,7 @@ public class GameActivity extends AppCompatActivity {
         ivAddGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(),"click!",Toast.LENGTH_SHORT);
-                addGame(0);
+                showPopup(v);
             }
         });
     }
@@ -46,5 +49,14 @@ public class GameActivity extends AppCompatActivity {
         games.add(new Game("Game " + index, "Description " + index, R.drawable.game_item_bg_01));
         MyGameAdapter adapter = new MyGameAdapter(this, games);
         listView.setAdapter(adapter);
+    }
+    private void showPopup(View v)
+    {
+        createJoinGame.setContentView(R.layout.dialog_create_join_game);
+        createJoinGame.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        createJoinGame.show();
+        addGame(6);
+        Toast.makeText(this,"click!", Toast.LENGTH_SHORT).show();
+        //dialog.dismiss()
     }
 }

@@ -4,6 +4,7 @@
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/action</item>
         <item name="colorPrimaryDark">@color/fillPrimary</item>
+        <item name="android:windowBackground">@color/fillPrimary</item>
         <item name="colorOnPrimary">@color/fillPrimary</item>
         <item name="colorPrimaryContainer">@color/fillPrimary</item>
         <item name="colorSecondaryContainer">@color/fillSecondary</item>
