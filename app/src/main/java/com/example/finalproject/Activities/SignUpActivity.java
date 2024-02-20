@@ -13,7 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalproject.Domains.User;
 import com.example.finalproject.R;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,8 @@ public class SignUpActivity extends AppCompatActivity {
     TextView tvMoveToSignIn;
     MotionLayout motionLayout;
     Button btSignUp;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onTransitionCompleted(MotionLayout motionLayout, int currentId) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+
             }
 
             @Override
@@ -75,21 +80,23 @@ public class SignUpActivity extends AppCompatActivity {
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //signUp();
+                if(validatePassword() && validateUsername() && validateEmail())
+                    signUp();
             }
         });
+
     }
 
     private void signUp()
     {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app//");
-        DatabaseReference databaseReference = firebaseDatabase.getReference("users");
+        firebaseDatabase = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/");
+        databaseReference = firebaseDatabase.getReference("users");
 
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
 
-        //User user = User(password,username,email);
+        User user = new User(username,password,email);
 
         Query query = databaseReference.orderByChild("username").equalTo(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -101,12 +108,14 @@ public class SignUpActivity extends AppCompatActivity {
                     etUsername.requestFocus();
                 }
                 else {
-                    //databaseReference.child(username).setValue(user);
+                    databaseReference.child(username).setValue(user);
                     Toast.makeText(getApplicationContext(),"Register Successfully",Toast.LENGTH_SHORT).show();
                     SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
                     SharedPreferences.Editor editor=sharedPreferences.edit();
                     editor.putString("username",username);
                     editor.apply();
+
+                    motionLayout.transitionToEnd();
                 }
             }
 
@@ -115,5 +124,36 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public Boolean validateUsername(){
+        String username=etUsername.getText().toString();
+        if(username.isEmpty()){
+            etUsername.setError("User name is required");
+            return false;
+        } else {
+            etUsername.setError(null);
+            return true;
+        }
+    }
+
+    public Boolean validatePassword(){
+        String password=etPassword.getText().toString();
+        if(password.isEmpty()){
+            etPassword.setError("Password is required");
+            return false;
+        } else {
+            etPassword.setError(null);
+            return true;
+        }
+    }
+    public Boolean validateEmail(){
+        String email = etEmail.getText().toString();
+        if(email.isEmpty()){
+            etEmail.setError("Email is required");
+            return false;
+        } else {
+            etEmail.setError(null);
+            return true;
+        }
     }
 }

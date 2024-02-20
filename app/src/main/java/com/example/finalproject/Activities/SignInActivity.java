@@ -105,11 +105,18 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+
     public void checkUser(){
         String username=etUsername.getText().toString().trim();
         String password=etPassword.getText().toString().trim();
 
-        DatabaseReference reference= FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app//").getReference("users");
+        DatabaseReference reference;
+        try {
+            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+        } catch (Exception e) {
+            etUsername.setError("User does not exist");
+            return;
+        }
         Query query=reference.orderByChild("username").equalTo(username);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -126,6 +133,8 @@ public class SignInActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor=sharedPreferences.edit();
                         editor.putString("username",username);
                         editor.apply();
+
+                        motionLayout.transitionToEnd();
 
                     } else {
                         etPassword.setError("Wrong password");

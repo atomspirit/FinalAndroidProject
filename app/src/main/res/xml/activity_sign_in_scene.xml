@@ -9,7 +9,6 @@
         motion:duration="1000">
        <KeyFrameSet>
        </KeyFrameSet>
-        <OnClick motion:targetId="@id/btSignIn" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
