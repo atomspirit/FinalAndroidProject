@@ -12,11 +12,17 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Adapters.VPAdapter;
 import com.example.finalproject.Domains.Game;
 import com.example.finalproject.Domains.MyGameAdapter;
 import com.example.finalproject.R;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
@@ -79,6 +85,20 @@ public class GameFragment extends Fragment{
     private void showPopup(View v)
     {
         createJoinGame.setContentView(R.layout.dialog_create_join_game);
+
+        TabLayout tabLayout = createJoinGame.findViewById(R.id.tabLayout);
+        ViewPager2 viewPager = createJoinGame.findViewById(R.id.viewPager);
+
+        VPAdapter vpAdapter = new VPAdapter(getActivity());
+        vpAdapter.addFragment(new JoinGameFragment(), "Join");
+        vpAdapter.addFragment(new CreateGameFragment(), "Create");
+        viewPager.setAdapter(vpAdapter);
+
+        // Use TabLayoutMediator to connect TabLayout with ViewPager2
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText(vpAdapter.getFragmentTitle(position));
+        }).attach();
+
         createJoinGame.show();
         addGame(1);
         createJoinGame.setCancelable(true);
