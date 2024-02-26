@@ -12,12 +12,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
-import com.example.finalproject.Adapters.VPAdapter;
+import com.example.finalproject.Adapters.VPAdapterForFragment;
 import com.example.finalproject.Domains.Game;
 import com.example.finalproject.Domains.MyGameAdapter;
 import com.example.finalproject.R;
@@ -89,7 +87,7 @@ public class GameFragment extends Fragment{
         TabLayout tabLayout = createJoinGame.findViewById(R.id.tabLayout);
         ViewPager2 viewPager = createJoinGame.findViewById(R.id.viewPager);
 
-        VPAdapter vpAdapter = new VPAdapter(getActivity());
+        VPAdapterForFragment vpAdapter = new VPAdapterForFragment(getActivity());
         vpAdapter.addFragment(new JoinGameFragment(), "Join");
         vpAdapter.addFragment(new CreateGameFragment(), "Create");
         viewPager.setAdapter(vpAdapter);
