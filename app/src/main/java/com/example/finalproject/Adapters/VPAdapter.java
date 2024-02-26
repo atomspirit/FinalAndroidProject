@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.finalproject.Fragments.CreateGameFragment;
+import com.example.finalproject.Fragments.JoinGameFragment;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class VPAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         String title = fragmentsList.get(position).second;
         if (title.equals("Create")) return new CreateGameFragment();
-        if (title.equals("Join")) return new CreateGameFragment();
+        if (title.equals("Join")) return new JoinGameFragment();
         else return new Fragment();
     }
 

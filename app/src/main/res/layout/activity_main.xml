@@ -21,7 +21,7 @@
 
         android:layout_height="50sp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/backgroud_tabs"
+        android:background="@drawable/background_tabs"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 

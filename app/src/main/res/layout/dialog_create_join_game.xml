@@ -4,12 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background_dialog"
+
+    >
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:tabTextColor="@color/primary"
+        app:tabSelectedTextColor="@color/action"
+        app:tabIndicatorHeight="0dp"
+        app:tabIndicatorFullWidth="false"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicator="@drawable/tab_indicator">
+        <!-- the IndicatorHeight needs to 0 that way it will remove the default indicator -->
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -20,13 +31,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create" />
-
     </com.google.android.material.tabs.TabLayout>
 
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent" />
 
 </LinearLayout>

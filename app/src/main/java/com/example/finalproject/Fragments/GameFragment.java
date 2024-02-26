@@ -58,7 +58,7 @@ public class GameFragment extends Fragment{
         ivAddGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopup(v);
+                showPopup();
             }
         });
         setOnItemClickListView();
@@ -82,7 +82,7 @@ public class GameFragment extends Fragment{
             }
         });
     }
-    private void showPopup(View v)
+    private void showPopup()
     {
         createJoinGame.setContentView(R.layout.dialog_create_join_game);
 
