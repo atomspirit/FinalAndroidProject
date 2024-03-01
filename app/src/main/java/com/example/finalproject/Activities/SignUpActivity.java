@@ -110,9 +110,9 @@ public class SignUpActivity extends AppCompatActivity {
                 else {
                     databaseReference.child(username).setValue(user);
                     Toast.makeText(getApplicationContext(),"Register Successfully",Toast.LENGTH_SHORT).show();
-                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("user",MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("shared_pref", MODE_PRIVATE);
                     SharedPreferences.Editor editor=sharedPreferences.edit();
-                    editor.putString("username",username);
+                    editor.putString("current_username",username);
                     editor.apply();
 
                     motionLayout.transitionToEnd();
