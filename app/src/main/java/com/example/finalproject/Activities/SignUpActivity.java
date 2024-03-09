@@ -4,16 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.Domains.User;
+import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
@@ -80,7 +83,8 @@ public class SignUpActivity extends AppCompatActivity {
         btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validatePassword() && validateUsername() && validateEmail())
+                Utilities.hideKeyboard(getApplicationContext(), getCurrentFocus());
+                if(Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword) && Utilities.validateEmail(etEmail))
                     signUp();
             }
         });
@@ -125,35 +129,5 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
-    public Boolean validateUsername(){
-        String username=etUsername.getText().toString();
-        if(username.isEmpty()){
-            etUsername.setError("User name is required");
-            return false;
-        } else {
-            etUsername.setError(null);
-            return true;
-        }
-    }
 
-    public Boolean validatePassword(){
-        String password=etPassword.getText().toString();
-        if(password.isEmpty()){
-            etPassword.setError("Password is required");
-            return false;
-        } else {
-            etPassword.setError(null);
-            return true;
-        }
-    }
-    public Boolean validateEmail(){
-        String email = etEmail.getText().toString();
-        if(email.isEmpty()){
-            etEmail.setError("Email is required");
-            return false;
-        } else {
-            etEmail.setError(null);
-            return true;
-        }
-    }
 }

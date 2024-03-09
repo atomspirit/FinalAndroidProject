@@ -9,14 +9,15 @@ import android.widget.TextView;
 
 import com.example.finalproject.Domains.Game;
 import com.example.finalproject.R;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 
 public class MyGameAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<Game> mData;
+    private ArrayList<Room> mData;
 
-    public MyGameAdapter(Context context, ArrayList<Game> data) {
+    public MyGameAdapter(Context context, ArrayList<Room> data) {
         mContext = context;
         mData = data;
     }
@@ -42,18 +43,18 @@ public class MyGameAdapter extends BaseAdapter {
 
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.lv_game_item, null);
+            view = inflater.inflate(R.layout.card_view_game_item, null);
         }
 
-        de.hdodenhof.circleimageview.CircleImageView imageView = view.findViewById(R.id.cimGameImage);
-        TextView textTitle = view.findViewById(R.id.tvGameTitle);
-        TextView textDescription = view.findViewById(R.id.tvGameDesc);
+        ShapeableImageView imageView = view.findViewById(R.id.ivGameIcon);
+        TextView textTitle = view.findViewById(R.id.tvName);
+        TextView textDescription = view.findViewById(R.id.tvDescription);
 
-        Game game = mData.get(position);
+        Room game = mData.get(position);
 
-        imageView.setImageResource(game.getImage());
-        textTitle.setText(game.getTitle());
-        textDescription.setText(game.getDescription());
+        imageView.setImageResource(R.drawable.game_item_bg_01); // TODO: change default image
+        textTitle.setText(game.getName());
+        textDescription.setText("Default description"); // TODO: change default description
 
         return view;
     }

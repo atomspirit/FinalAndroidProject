@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Interfaces.AddGameListener;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,6 +28,8 @@ public class JoinGameFragment extends Fragment {
 
     EditText etCode;
     Button btJoin;
+    private AddGameListener addGameListener;
+
 
     public JoinGameFragment() {
         // Required empty public constructor
@@ -94,6 +97,8 @@ public class JoinGameFragment extends Fragment {
                     // Apply the changes
                     editor.apply();
 
+
+
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
                     getActivity().startActivity(intent);
@@ -109,5 +114,8 @@ public class JoinGameFragment extends Fragment {
 
             }
         });
+    }
+    public void setAddGameListener(AddGameListener listener) {
+        this.addGameListener = listener;
     }
 }

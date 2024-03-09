@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
+import com.example.finalproject.Interfaces.AddGameListener;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +36,8 @@ public class CreateGameFragment extends Fragment {
     Button btCreate;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    private AddGameListener addGameListener;
+
 
     public CreateGameFragment() {
         // Required empty public constructor
@@ -106,6 +109,11 @@ public class CreateGameFragment extends Fragment {
                     // Apply the changes
                     editor.apply();
 
+                    // Add the game to the listView of games
+                    if(addGameListener != null){
+                        addGameListener.onAddGame(room);
+                    }
+
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
                     getActivity().startActivity(intent);
@@ -137,5 +145,9 @@ public class CreateGameFragment extends Fragment {
             etName.setError(null);
             return true;
         }
+    }
+
+    public void setAddGameListener(AddGameListener listener) {
+        this.addGameListener = listener;
     }
 }

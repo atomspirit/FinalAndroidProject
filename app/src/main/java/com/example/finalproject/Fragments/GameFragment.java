@@ -18,17 +18,19 @@ import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
 import com.example.finalproject.Domains.Game;
 import com.example.finalproject.Domains.MyGameAdapter;
+import com.example.finalproject.Domains.Room;
+import com.example.finalproject.Interfaces.AddGameListener;
 import com.example.finalproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
-public class GameFragment extends Fragment{
+public class GameFragment extends Fragment implements AddGameListener {
 
     ImageView ivAddGame;
     ListView listView;
-    ArrayList<Game> games;
+    ArrayList<Room> games;
     Dialog createJoinGame;
 
     public GameFragment() {
@@ -48,7 +50,7 @@ public class GameFragment extends Fragment{
 
     private void initComponent(View view)
     {
-        games = new ArrayList<Game>();
+        games = new ArrayList<>();
         listView =  view.findViewById(R.id.lvGameList);
 
         ivAddGame = view.findViewById(R.id.ivAddGame);
@@ -64,9 +66,9 @@ public class GameFragment extends Fragment{
 
     }
 
-    private void addGame(int index)
+    public void addGame(Room room)
     {
-        games.add(new Game("Game " + index, "Description " + index, R.drawable.game_item_bg_01));
+        games.add(room);
         MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
         listView.setAdapter(adapter);
     }
@@ -82,14 +84,26 @@ public class GameFragment extends Fragment{
     }
     private void showPopup()
     {
+        // Create the dialog
         createJoinGame.setContentView(R.layout.dialog_create_join_game);
 
         TabLayout tabLayout = createJoinGame.findViewById(R.id.tabLayout);
         ViewPager2 viewPager = createJoinGame.findViewById(R.id.viewPager);
 
+        // Create the adapter
         VPAdapterForFragment vpAdapter = new VPAdapterForFragment(getActivity());
-        vpAdapter.addFragment(new JoinGameFragment(), "Join");
-        vpAdapter.addFragment(new CreateGameFragment(), "Create");
+
+        // Create the fragments
+        JoinGameFragment joinGameFragment = new JoinGameFragment();
+        CreateGameFragment createGameFragment = new CreateGameFragment();
+
+        // Pass onAddGameListener to the fragments
+        joinGameFragment.setAddGameListener(this);
+        createGameFragment.setAddGameListener(this);
+
+        // Add the fragments
+        vpAdapter.addFragment(joinGameFragment, "Join");
+        vpAdapter.addFragment(createGameFragment, "Create");
         viewPager.setAdapter(vpAdapter);
 
         // Use TabLayoutMediator to connect TabLayout with ViewPager2
@@ -98,9 +112,12 @@ public class GameFragment extends Fragment{
         }).attach();
 
         createJoinGame.show();
-        addGame(1);
         createJoinGame.setCancelable(true);
     }
 
 
+    @Override
+    public void onAddGame(Room room) {
+        addGame(room);
+    }
 }

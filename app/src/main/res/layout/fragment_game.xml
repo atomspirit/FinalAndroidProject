@@ -75,6 +75,7 @@
             android:layout_height="match_parent"
             android:dividerHeight="20dp"
             android:divider="@color/transparent"
+            tools:listitem="@layout/card_view_game_item"
             />
 
 

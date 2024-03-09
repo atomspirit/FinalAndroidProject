@@ -12,4 +12,9 @@
         <item name="colorAccent">@color/action</item>
         <item name="fontFamily">@font/alegreya_sans</item>
     </style>
+
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
