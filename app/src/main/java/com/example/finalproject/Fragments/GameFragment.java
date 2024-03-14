@@ -16,8 +16,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
-import com.example.finalproject.Domains.Game;
-import com.example.finalproject.Domains.MyGameAdapter;
+import com.example.finalproject.Adapters.MyGameAdapter;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Interfaces.AddGameListener;
 import com.example.finalproject.R;

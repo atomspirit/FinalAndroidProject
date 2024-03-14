@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
+import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.Interfaces.AddGameListener;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
@@ -56,7 +57,8 @@ public class CreateGameFragment extends Fragment {
         btCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validateCode() && validateName()){
+                if(Utilities.validateEditText(etName, "Room name is required") &&
+                        Utilities.validateEditText(etCode, "Room code is required")){
                     addRoom();
                 }
             }
@@ -125,26 +127,6 @@ public class CreateGameFragment extends Fragment {
 
             }
         });
-    }
-    public Boolean validateCode(){
-        String username = etCode.getText().toString();
-        if(username.isEmpty()){
-            etCode.setError("Room code is required");
-            return false;
-        } else {
-            etCode.setError(null);
-            return true;
-        }
-    }
-    public Boolean validateName(){
-        String username = etName.getText().toString();
-        if(username.isEmpty()){
-            etName.setError("Room name is required");
-            return false;
-        } else {
-            etName.setError(null);
-            return true;
-        }
     }
 
     public void setAddGameListener(AddGameListener listener) {

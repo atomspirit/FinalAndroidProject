@@ -14,37 +14,52 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Room {
-    private String code, name;
+    // Fields -------------------------------------------------------------------------------------
+    private String code, name, description;
     private ArrayList<User> participants;
     private User host;
 
+    private static final String DEFAULT_DESCRIPTION = "default description";
 
+
+    // Constructors -------------------------------------------------------------------------------
     public Room(String name, String code, User host) {
         this.code = code;
         this.name = name;
         this.participants = new ArrayList<>();
         addParticipant(host);
         this.host = host;
+        this.description = DEFAULT_DESCRIPTION;
     }
-    public Room()
-    {
-        // Default constructor required for calls to DataSnapshot.getValue(Room.class)
+    public Room(String name, String code, User host, ArrayList<User> participants) {
+        this.code = code;
+        this.name = name;
+        this.participants = participants;
+        this.host = host;
+        this.description = DEFAULT_DESCRIPTION;
     }
 
-    public void addParticipant(User user){
-        participants.add(user);
-    }
-
+    // Getters and setters ------------------------------------------------------------------------
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCode() {
@@ -69,6 +84,42 @@ public class Room {
 
     public void setHost(User host) {
         this.host = host;
+    }
+
+    // Methods ------------------------------------------------------------------------------------
+    public void addParticipant(User user){
+        participants.add(user);
+    }
+
+    public void updateParticipants(Context context){
+        String current_room = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_room", "");
+
+        DatabaseReference reference;
+        try {
+            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ;
+        }
+
+        Query query=reference.orderByChild("code").equalTo(current_room);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    snapshot.child(current_room).getRef().child("participants").setValue(participants);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public boolean containsParticipant(User user){
+        return participants.contains(user);
     }
 
     static public void getCurrentRoom(Context context, RoomCallback callback) {
@@ -101,6 +152,26 @@ public class Room {
         });
     }
 
+    // Custom deserialization method
+    public static Room fromSnapshot(DataSnapshot snapshot) {
+        String code = snapshot.child("code").getValue(String.class);
+        String name = snapshot.child("name").getValue(String.class);
+        User host = User.fromSnapshot(snapshot.child("host"));
+        ArrayList<User> participants = new ArrayList<>();
+
+        for (DataSnapshot child : snapshot.child("participants").getChildren()) {
+            participants.add(User.fromSnapshot(child));
+            Log.d("Room", participants.toString());
+        }
+
+
+        Room room = new Room(name,code, host,participants);
+        Log.d("Room", "parts: " + room.getParticipants());
+
+        return room;
+    }
+
+    // Conversion methods -------------------------------------------------------------------------
     @Override
     public String toString() {
         return "Room{" +
@@ -119,16 +190,8 @@ public class Room {
         result.put("host", host.toMap());
         return result;
     }
-    // Custom deserialization method
-    public static Room fromSnapshot(DataSnapshot snapshot) {
-        String code = snapshot.child("code").getValue(String.class);
-        String name = snapshot.child("name").getValue(String.class);
-        User host = User.fromSnapshot(snapshot.child("host"));
-        ArrayList<User> participants = new ArrayList<>(); // TODO: make deserializable & c'tor with list
 
-        return new Room(name,code, host);
-    }
-
+    // Interfaces ---------------------------------------------------------------------------------
     public interface RoomCallback {
         void onRoomReceived(Room room);
     }

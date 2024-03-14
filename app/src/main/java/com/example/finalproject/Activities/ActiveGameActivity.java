@@ -12,14 +12,25 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.finalproject.Adapters.VPAdapter;
 import com.example.finalproject.Domains.Room;
+import com.example.finalproject.Fragments.GameFragment;
+import com.example.finalproject.Fragments.MainNFCFragment;
+import com.example.finalproject.Fragments.OptionsFragment;
+import com.example.finalproject.Fragments.ProfileFragment;
+import com.example.finalproject.Fragments.RoomInfoFragment;
 import com.example.finalproject.R;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ActiveGameActivity extends AppCompatActivity {
     ImageView ivBack;
     TextView tvGameTitle;
     Room room;
+    ViewPager2 viewPager;
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +38,12 @@ public class ActiveGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_active_game);
 
         initComponent();
+        setupTabLayout();
     }
     private void initComponent()
     {
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
         tvGameTitle = findViewById(R.id.tvGameTitle);
         ivBack = findViewById(R.id.ivBack);
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -49,4 +63,20 @@ public class ActiveGameActivity extends AppCompatActivity {
             }
         });
     }
+    private void setupTabLayout()
+    {
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
+
+        VPAdapter vpAdapter = new VPAdapter(this);
+        vpAdapter.addFragment(new MainNFCFragment(), "Main");
+        vpAdapter.addFragment(new RoomInfoFragment(), "Info");
+        viewPager.setAdapter(vpAdapter);
+
+        // Use TabLayoutMediator to connect TabLayout with ViewPager2
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            tab.setText(vpAdapter.getFragmentTitle(position));
+        }).attach();
+    }
+
 }

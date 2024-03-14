@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -97,6 +98,20 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+    @Override
+    public int hashCode() {
+        return Objects.hash(username); // Use a unique attribute for hashing
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        User otherUser = (User) obj;
+        return Objects.equals(username, otherUser.username); // Compare unique attributes
+    }
+
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("username", username);
