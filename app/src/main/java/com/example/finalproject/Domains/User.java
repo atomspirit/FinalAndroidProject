@@ -23,16 +23,22 @@ import java.util.concurrent.CountDownLatch;
  * A class to represent a single user in the database
  */
 public class User {
+
+    // Fields -------------------------------------------------------------------------------------
     private String username;
     private String password;
     private String email;
 
+
+    // Constructors -------------------------------------------------------------------------------
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
     }
 
+
+    // Methods ------------------------------------------------------------------------------------
     static public void getCurrentUser(Context context, UserCallback callback){
         String current_username = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_username", "");
         DatabaseReference reference;
@@ -65,7 +71,25 @@ public class User {
         });
     }
 
+    // Custom deserialization method
+    public static User fromSnapshot(DataSnapshot snapshot) {
+        String username = snapshot.child("username").getValue(String.class);
+        String password = snapshot.child("password").getValue(String.class);
+        String email = snapshot.child("email").getValue(String.class);
 
+        Log.d("TAG", "received user from snapshot: " + new User(username,password, email));
+
+        return new User(username,password, email);
+    }
+
+    public static void addToRoom(String username, String roomCode){
+        // TODO: fix bug, this func doesn't change the db
+        DatabaseReference userRooms = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/")
+                .getReference("users").child(username).child("rooms").child(roomCode);
+    }
+
+
+    // Getters and setters ------------------------------------------------------------------------
     public String getUsername() {
         return username;
     }
@@ -90,6 +114,8 @@ public class User {
         this.email = email;
     }
 
+
+    // Conversion methods -------------------------------------------------------------------------
     @Override
     public String toString() {
         return "User{" +
@@ -120,17 +146,8 @@ public class User {
         return result;
     }
 
-    // Custom deserialization method
-    public static User fromSnapshot(DataSnapshot snapshot) {
-        String username = snapshot.child("username").getValue(String.class);
-        String password = snapshot.child("password").getValue(String.class);
-        String email = snapshot.child("email").getValue(String.class);
 
-        Log.d("TAG", "received user from snapshot: " + new User(username,password, email));
-
-        return new User(username,password, email);
-    }
-
+    // Interfaces ---------------------------------------------------------------------------------
     public interface UserCallback {
         void onUserReceived(User user);
     }

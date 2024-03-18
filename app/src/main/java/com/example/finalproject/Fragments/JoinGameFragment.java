@@ -8,7 +8,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
-import com.example.finalproject.Interfaces.AddGameListener;
+import com.example.finalproject.Interfaces.FragmentInteractionListener;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,12 +31,12 @@ public class JoinGameFragment extends Fragment {
 
     EditText etCode;
     Button btJoin;
-    private AddGameListener addGameListener;
+    private FragmentInteractionListener fragmentInteractionListener;
+
 
 
     public JoinGameFragment() {
         // Required empty public constructor
-
     }
 
     @Override
@@ -52,7 +51,10 @@ public class JoinGameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if(Utilities.validateEditText(etCode, "Room code is required")){
+                    Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
                     checkRoom();
+                    if (fragmentInteractionListener != null)
+                        fragmentInteractionListener.onButtonClicked(); // TODO: fix bug - null arg
                 }
             }
         });
@@ -104,15 +106,10 @@ public class JoinGameFragment extends Fragment {
                                             room.addParticipant(user);
                                             room.updateParticipants(getContext());
                                         }
-
-                                        // Add the game to the listView of games
-                                        if(addGameListener != null){
-                                            addGameListener.onAddGame(room);
-                                        }
                                     }
                                 }
                             });
-
+                            User.addToRoom(user.getUsername(), roomCode);
                         }
                     });
 
@@ -135,7 +132,7 @@ public class JoinGameFragment extends Fragment {
             }
         });
     }
-    public void setAddGameListener(AddGameListener listener) {
-        this.addGameListener = listener;
+    public void setFragmentInteractionListener(FragmentInteractionListener fragmentInteractionListener) {
+        this.fragmentInteractionListener = fragmentInteractionListener;
     }
 }

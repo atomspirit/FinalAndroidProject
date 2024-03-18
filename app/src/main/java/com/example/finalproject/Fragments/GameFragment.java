@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -18,14 +18,20 @@ import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
 import com.example.finalproject.Adapters.MyGameAdapter;
 import com.example.finalproject.Domains.Room;
-import com.example.finalproject.Interfaces.AddGameListener;
+import com.example.finalproject.Domains.User;
+import com.example.finalproject.Interfaces.FragmentInteractionListener;
 import com.example.finalproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class GameFragment extends Fragment implements AddGameListener {
+public class GameFragment extends Fragment {
 
     ImageView ivAddGame;
     ListView listView;
@@ -42,6 +48,24 @@ public class GameFragment extends Fragment implements AddGameListener {
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         initComponent(v);
 
+        User.getCurrentUser(getContext(), new User.UserCallback() {
+            @Override
+            public void onUserReceived(User user) {
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users").child(user.getUsername()).child("rooms");
+                databaseReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        loadRooms(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
         return v;
     }
 
@@ -53,7 +77,6 @@ public class GameFragment extends Fragment implements AddGameListener {
         listView =  view.findViewById(R.id.lvGameList);
 
         ivAddGame = view.findViewById(R.id.ivAddGame);
-        if (ivAddGame == null)Toast.makeText(getActivity().getApplication(), "null arg!", Toast.LENGTH_LONG).show();
         ivAddGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,9 +119,19 @@ public class GameFragment extends Fragment implements AddGameListener {
         JoinGameFragment joinGameFragment = new JoinGameFragment();
         CreateGameFragment createGameFragment = new CreateGameFragment();
 
-        // Pass onAddGameListener to the fragments
-        joinGameFragment.setAddGameListener(this);
-        createGameFragment.setAddGameListener(this);
+        // Pass FragmentInteractionListener to the fragments
+        joinGameFragment.setFragmentInteractionListener(new FragmentInteractionListener() {
+            @Override
+            public void onButtonClicked() {
+                createJoinGame.dismiss();
+            }
+        });
+        createGameFragment.setFragmentInteractionListener(new FragmentInteractionListener() {
+            @Override
+            public void onButtonClicked() {
+                createJoinGame.dismiss();
+            }
+        });
 
         // Add the fragments
         vpAdapter.addFragment(joinGameFragment, "Join");
@@ -113,10 +146,11 @@ public class GameFragment extends Fragment implements AddGameListener {
         createJoinGame.show();
         createJoinGame.setCancelable(true);
     }
-
-
-    @Override
-    public void onAddGame(Room room) {
-        addGame(room);
+    private void loadRooms(DataSnapshot snapshot) {
+        for (DataSnapshot ds : snapshot.getChildren()) {
+            Room room = ds.getValue(Room.class); // TODO: change to String and get the room from db (i save only the code)
+            addGame(room);
+        }
     }
+
 }

@@ -14,13 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
-import com.example.finalproject.Interfaces.AddGameListener;
+import com.example.finalproject.Interfaces.FragmentInteractionListener;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,15 +28,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
-
-public class CreateGameFragment extends Fragment {
+public class CreateGameFragment extends Fragment  {
 
     EditText etCode, etName;
     Button btCreate;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    private AddGameListener addGameListener;
+    private FragmentInteractionListener fragmentInteractionListener;
 
 
     public CreateGameFragment() {
@@ -59,7 +56,10 @@ public class CreateGameFragment extends Fragment {
             public void onClick(View view) {
                 if(Utilities.validateEditText(etName, "Room name is required") &&
                         Utilities.validateEditText(etCode, "Room code is required")){
+                    Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
                     addRoom();
+                    if(fragmentInteractionListener != null)
+                        fragmentInteractionListener.onButtonClicked();
                 }
             }
         });
@@ -111,10 +111,7 @@ public class CreateGameFragment extends Fragment {
                     // Apply the changes
                     editor.apply();
 
-                    // Add the game to the listView of games
-                    if(addGameListener != null){
-                        addGameListener.onAddGame(room);
-                    }
+                    User.addToRoom(room.getHost().getUsername(), room.getCode());
 
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
@@ -129,7 +126,7 @@ public class CreateGameFragment extends Fragment {
         });
     }
 
-    public void setAddGameListener(AddGameListener listener) {
-        this.addGameListener = listener;
+    public void setFragmentInteractionListener(FragmentInteractionListener fragmentInteractionListener) {
+        this.fragmentInteractionListener = fragmentInteractionListener;
     }
 }
