@@ -29,20 +29,20 @@ public class Room {
 
 
     // Constructors -------------------------------------------------------------------------------
-    public Room(String name, String code, User host) {
+    public Room(String name, String code, User host, String description) {
         this.code = code;
         this.name = name;
         this.participants = new ArrayList<>();
         addParticipant(host);
         this.host = host;
-        this.description = DEFAULT_DESCRIPTION;
+        this.description = description;
     }
-    public Room(String name, String code, User host, ArrayList<User> participants) {
+    public Room(String name, String code, User host,String description, ArrayList<User> participants) {
         this.code = code;
         this.name = name;
         this.participants = participants;
         this.host = host;
-        this.description = DEFAULT_DESCRIPTION;
+        this.description = description;
     }
 
     // Getters and setters ------------------------------------------------------------------------
@@ -151,22 +151,49 @@ public class Room {
             }
         });
     }
+    public static void createRoomFromCode(String code, RoomCallback callback) {
+        DatabaseReference reference;
+        try {
+            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ;
+        }
+
+        Query query=reference.orderByChild("code").equalTo(code);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Room room = Room.fromSnapshot(snapshot.child(code));
+                    callback.onRoomReceived(room);
+                } else {
+                    callback.onRoomReceived(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onRoomReceived(null);
+            }
+        });
+    }
 
     // Custom deserialization method
     public static Room fromSnapshot(DataSnapshot snapshot) {
         String code = snapshot.child("code").getValue(String.class);
         String name = snapshot.child("name").getValue(String.class);
+        String description = snapshot.child("description").getValue(String.class);
         User host = User.fromSnapshot(snapshot.child("host"));
         ArrayList<User> participants = new ArrayList<>();
 
         for (DataSnapshot child : snapshot.child("participants").getChildren()) {
             participants.add(User.fromSnapshot(child));
-            Log.d("Room", participants.toString());
         }
 
 
-        Room room = new Room(name,code, host,participants);
-        Log.d("Room", "parts: " + room.getParticipants());
+        Room room = new Room(name,code, host,description,participants);
 
         return room;
     }
@@ -188,6 +215,7 @@ public class Room {
         result.put("name", name);
         result.put("participants", participants);
         result.put("host", host.toMap());
+        result.put("description", description);
         return result;
     }
 

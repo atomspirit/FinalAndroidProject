@@ -63,7 +63,7 @@ public class JoinGameFragment extends Fragment {
     }
 
     public void checkRoom(){
-        String roomCode = etCode.getText().toString().trim();
+        String roomCode = etCode.getText().toString().trim().toUpperCase();
 
         DatabaseReference reference;
         try {
@@ -109,7 +109,7 @@ public class JoinGameFragment extends Fragment {
                                     }
                                 }
                             });
-                            User.addToRoom(user.getUsername(), roomCode);
+                            User.addToRoom(getContext(),user.getUsername(), roomCode);
                         }
                     });
 

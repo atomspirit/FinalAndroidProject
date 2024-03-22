@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -82,10 +83,39 @@ public class User {
         return new User(username,password, email);
     }
 
-    public static void addToRoom(String username, String roomCode){
-        // TODO: fix bug, this func doesn't change the db
-        DatabaseReference userRooms = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/")
-                .getReference("users").child(username).child("rooms").child(roomCode);
+    public static void addToRoom(Context context, String username, String roomCode){
+        DatabaseReference reference;
+        try {
+            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        reference.child(username).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> rooms = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String roomName = snapshot.getValue(String.class);
+                        rooms.add(roomName);
+                    }
+                    if(!rooms.contains(roomCode))
+                        rooms.add(roomCode);
+
+                } else {
+                    // rooms list doesn't exist, create a new one with current_room
+                    rooms.add(roomCode);
+                    reference.child(username).child("rooms").setValue(rooms);
+                }
+                reference.child(username).child("rooms").setValue(rooms);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+            }
+        });
     }
 
 

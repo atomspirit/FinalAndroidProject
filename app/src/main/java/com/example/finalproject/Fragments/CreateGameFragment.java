@@ -30,7 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class CreateGameFragment extends Fragment  {
 
-    EditText etCode, etName;
+    EditText etCode, etName, etDesc;
     Button btCreate;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
@@ -50,12 +50,14 @@ public class CreateGameFragment extends Fragment  {
 
         etCode = v.findViewById(R.id.etCode);
         etName = v.findViewById(R.id.etName);
+        etDesc = v.findViewById(R.id.etDesc);
         btCreate = v.findViewById(R.id.btCreate);
         btCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(Utilities.validateEditText(etName, "Room name is required") &&
-                        Utilities.validateEditText(etCode, "Room code is required")){
+                        (Utilities.validateEditText(etCode, "Room description is required"))
+                        && Utilities.validateEditText(etCode, "Room code is required")){
                     Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
                     addRoom();
                     if(fragmentInteractionListener != null)
@@ -72,12 +74,13 @@ public class CreateGameFragment extends Fragment  {
         databaseReference = firebaseDatabase.getReference("rooms");
 
         String roomName = etName.getText().toString().trim();
-        String roomCode = etCode.getText().toString().trim();
+        String roomCode = etCode.getText().toString().trim().toUpperCase();
+        String roomDesc = etDesc.getText().toString().trim();
 
         User.getCurrentUser(getActivity(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
-                Room room = new Room(roomName,roomCode,user);
+                Room room = new Room(roomName, roomCode, user, roomDesc);
                 compareRoom(room);
             }
         });
@@ -111,7 +114,7 @@ public class CreateGameFragment extends Fragment  {
                     // Apply the changes
                     editor.apply();
 
-                    User.addToRoom(room.getHost().getUsername(), room.getCode());
+                    User.addToRoom(getContext(),room.getHost().getUsername(), room.getCode());
 
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);

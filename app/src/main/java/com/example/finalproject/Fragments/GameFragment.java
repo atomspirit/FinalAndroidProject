@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameFragment extends Fragment {
 
@@ -94,6 +95,12 @@ public class GameFragment extends Fragment {
         MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
         listView.setAdapter(adapter);
     }
+    public void clearGames()
+    {
+        games.clear();
+        MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
+        listView.setAdapter(adapter);
+    }
     private void setOnItemClickListView() {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -147,9 +154,16 @@ public class GameFragment extends Fragment {
         createJoinGame.setCancelable(true);
     }
     private void loadRooms(DataSnapshot snapshot) {
+        clearGames();
         for (DataSnapshot ds : snapshot.getChildren()) {
-            Room room = ds.getValue(Room.class); // TODO: change to String and get the room from db (i save only the code)
-            addGame(room);
+            String code = ds.getValue(String.class);
+            Room.createRoomFromCode(code, new Room.RoomCallback() {
+                @Override
+                public void onRoomReceived(Room room) {
+                    if(room != null)
+                        addGame(room);
+                }
+            });
         }
     }
 
