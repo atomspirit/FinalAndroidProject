@@ -1,5 +1,7 @@
 package com.example.finalproject.Activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,6 +54,19 @@ public class ActiveGameActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Create or access the shared preferences
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("shared_pref", Context.MODE_PRIVATE);
+
+        // Get an editor to edit SharedPreferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Put the code the room code into the SharedPreferences with key "current_room"
+        editor.putString("current_room", getIntent().getStringExtra("room_code"));
+
+        // Apply the changes
+        editor.apply();
+
 
         Room.getCurrentRoom(getApplicationContext(), new Room.RoomCallback() {
             @Override

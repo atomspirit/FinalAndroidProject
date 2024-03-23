@@ -12,14 +12,19 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Adapters.RVRoomAdapter;
+import com.example.finalproject.Adapters.RVUserAdapter;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
 import com.example.finalproject.Adapters.MyGameAdapter;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.FragmentInteractionListener;
+import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -32,10 +37,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements RVInterface {
+
+    // TODO: apply new adapter
 
     ImageView ivAddGame;
-    ListView listView;
+    RecyclerView recyclerView;
     ArrayList<Room> games;
     Dialog createJoinGame;
 
@@ -75,7 +82,7 @@ public class GameFragment extends Fragment {
     private void initComponent(View view)
     {
         games = new ArrayList<>();
-        listView =  view.findViewById(R.id.lvGameList);
+        recyclerView = view.findViewById(R.id.recyclerView);
 
         ivAddGame = view.findViewById(R.id.ivAddGame);
         ivAddGame.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +91,6 @@ public class GameFragment extends Fragment {
                 showPopup();
             }
         });
-        setOnItemClickListView();
         createJoinGame = new Dialog(view.getContext());
 
     }
@@ -92,24 +98,21 @@ public class GameFragment extends Fragment {
     public void addGame(Room room)
     {
         games.add(room);
-        MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
-        listView.setAdapter(adapter);
+        setupAdapterWithRecyclerView();
+
     }
     public void clearGames()
     {
         games.clear();
-        MyGameAdapter adapter = new MyGameAdapter(getContext(), games);
-        listView.setAdapter(adapter);
+        setupAdapterWithRecyclerView();
     }
-    private void setOnItemClickListView() {
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
-                //intent.putExtra(); using position find the database id and pass it
-                getActivity().startActivity(intent);
-            }
-        });
+    private void setupAdapterWithRecyclerView() {
+        // Set up the recycler view
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+
+        RVRoomAdapter adapter = new RVRoomAdapter(getContext(), games, this);
+        recyclerView.setAdapter(adapter);
     }
     private void showPopup()
     {
@@ -167,4 +170,10 @@ public class GameFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onItemClicked(int position) {
+        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+        intent.putExtra("room_code", games.get(position).getCode());
+        getActivity().startActivity(intent);
+    }
 }

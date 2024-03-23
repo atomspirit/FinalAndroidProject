@@ -1,5 +1,6 @@
 package com.example.finalproject.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,16 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Activities.UserProfileActivity;
 import com.example.finalproject.Adapters.RVUserAdapter;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
+import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
-public class RoomInfoFragment extends Fragment {
+public class RoomInfoFragment extends Fragment implements RVInterface {
 
     ArrayList<User> participants;
     RecyclerView recyclerView;
@@ -61,8 +65,13 @@ public class RoomInfoFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        RVUserAdapter adapter = new RVUserAdapter(getContext(), participants);
+        RVUserAdapter adapter = new RVUserAdapter(getContext(), participants, this);
         recyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onItemClicked(int position) {
+        Intent intent = new Intent(getContext(), UserProfileActivity.class);
+        intent.putExtra("username", participants.get(position).getUsername());
+    }
 }

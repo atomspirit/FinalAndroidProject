@@ -63,20 +63,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/lvGameList"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:dividerHeight="20dp"
-            android:divider="@color/transparent"
-            tools:listitem="@layout/card_view_game_item"
-            />
+            android:layout_height="match_parent" />
 
 
     </LinearLayout>

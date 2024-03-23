@@ -41,6 +41,7 @@ public class MyGameAdapter extends ArrayAdapter<Room> {
         tvDescription.setText(room.getDescription());
         ivGameIcon.setImageResource(R.drawable.game_item_bg_01); // TODO: change default image
 
+
         return convertView;
     }
 }
