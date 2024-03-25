@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
@@ -92,13 +93,12 @@ public class SignInActivity extends AppCompatActivity {
         String username=etUsername.getText().toString().trim();
         String password=etPassword.getText().toString().trim();
 
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
-        } catch (Exception e) {
+        DatabaseReference reference = FirebaseManager.getReference("users");
+        if(reference == null){
             etUsername.setError("User does not exist");
             return;
         }
+
         Query query=reference.orderByChild("username").equalTo(username);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {

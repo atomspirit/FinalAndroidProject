@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
@@ -32,7 +33,6 @@ public class CreateGameFragment extends Fragment  {
 
     EditText etCode, etName, etDesc;
     Button btCreate;
-    FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     private FragmentInteractionListener fragmentInteractionListener;
 
@@ -70,8 +70,10 @@ public class CreateGameFragment extends Fragment  {
     }
     private void addRoom()
     {
-        firebaseDatabase = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/");
-        databaseReference = firebaseDatabase.getReference("rooms");
+        databaseReference = FirebaseManager.getReference("rooms");
+        if(databaseReference == null){
+            return;
+        }
 
         String roomName = etName.getText().toString().trim();
         String roomCode = etCode.getText().toString().trim().toUpperCase();
@@ -114,7 +116,7 @@ public class CreateGameFragment extends Fragment  {
                     // Apply the changes
                     editor.apply();
 
-                    User.addToRoom(getContext(),room.getHost().getUsername(), room.getCode());
+                    User.addToRoom(room.getHost().getUsername(), room.getCode());
 
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);

@@ -94,13 +94,8 @@ public class Room {
     public void updateParticipants(Context context){
         String current_room = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_room", "");
 
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ;
-        }
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+
 
         Query query=reference.orderByChild("code").equalTo(current_room);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -125,13 +120,8 @@ public class Room {
     static public void getCurrentRoom(Context context, RoomCallback callback) {
         String current_room = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_room", "");
 
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ;
-        }
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+
 
         Query query=reference.orderByChild("code").equalTo(current_room);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,13 +142,8 @@ public class Room {
         });
     }
     public static void createRoomFromCode(String code, RoomCallback callback) {
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ;
-        }
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+
 
         Query query=reference.orderByChild("code").equalTo(code);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -199,6 +184,7 @@ public class Room {
     }
 
     // Conversion methods -------------------------------------------------------------------------
+    @NonNull
     @Override
     public String toString() {
         return "Room{" +

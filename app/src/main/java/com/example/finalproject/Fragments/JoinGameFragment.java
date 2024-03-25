@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
@@ -65,10 +66,8 @@ public class JoinGameFragment extends Fragment {
     public void checkRoom(){
         String roomCode = etCode.getText().toString().trim().toUpperCase();
 
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("rooms");
-        } catch (Exception e) {
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+        if(reference == null){
             etCode.setError("Room does not exist");
             return;
         }
@@ -109,7 +108,7 @@ public class JoinGameFragment extends Fragment {
                                     }
                                 }
                             });
-                            User.addToRoom(getContext(),user.getUsername(), roomCode);
+                            User.addToRoom(user.getUsername(), roomCode);
                         }
                     });
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,6 +22,7 @@ import com.example.finalproject.Adapters.RVRoomAdapter;
 import com.example.finalproject.Adapters.RVUserAdapter;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
 import com.example.finalproject.Adapters.MyGameAdapter;
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.FragmentInteractionListener;
@@ -39,9 +41,9 @@ import java.util.Objects;
 
 public class GameFragment extends Fragment implements RVInterface {
 
-    // TODO: apply new adapter
 
     ImageView ivAddGame;
+    TextView tvEmptyRooms;
     RecyclerView recyclerView;
     ArrayList<Room> games;
     Dialog createJoinGame;
@@ -59,7 +61,7 @@ public class GameFragment extends Fragment implements RVInterface {
         User.getCurrentUser(getContext(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
-                DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users").child(user.getUsername()).child("rooms");
+                DatabaseReference databaseReference = FirebaseManager.getReference("users").child(user.getUsername()).child("rooms");
                 databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -83,6 +85,7 @@ public class GameFragment extends Fragment implements RVInterface {
     {
         games = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerView);
+        tvEmptyRooms = view.findViewById(R.id.tvEmptyRooms);
 
         ivAddGame = view.findViewById(R.id.ivAddGame);
         ivAddGame.setOnClickListener(new View.OnClickListener() {
@@ -158,8 +161,10 @@ public class GameFragment extends Fragment implements RVInterface {
     }
     private void loadRooms(DataSnapshot snapshot) {
         clearGames();
+        boolean isEmpty = true;
         for (DataSnapshot ds : snapshot.getChildren()) {
             String code = ds.getValue(String.class);
+            isEmpty = false;
             Room.createRoomFromCode(code, new Room.RoomCallback() {
                 @Override
                 public void onRoomReceived(Room room) {
@@ -167,6 +172,15 @@ public class GameFragment extends Fragment implements RVInterface {
                         addGame(room);
                 }
             });
+        }
+        if (isEmpty)
+        {
+            tvEmptyRooms.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else {
+            tvEmptyRooms.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 

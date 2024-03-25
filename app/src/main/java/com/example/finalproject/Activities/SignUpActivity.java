@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
@@ -32,7 +33,6 @@ public class SignUpActivity extends AppCompatActivity {
     TextView tvMoveToSignIn;
     MotionLayout motionLayout;
     Button btSignUp;
-    FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
 
     @Override
@@ -93,8 +93,10 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUp()
     {
-        firebaseDatabase = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/");
-        databaseReference = firebaseDatabase.getReference("users");
+        databaseReference = FirebaseManager.getReference("users");
+        if(databaseReference == null){
+            return;
+        }
 
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();

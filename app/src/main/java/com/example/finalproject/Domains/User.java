@@ -42,11 +42,8 @@ public class User {
     // Methods ------------------------------------------------------------------------------------
     static public void getCurrentUser(Context context, UserCallback callback){
         String current_username = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_username", "");
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
-        } catch (Exception e) {
-            e.printStackTrace();
+        DatabaseReference reference = FirebaseManager.getReference("users");
+        if(reference == null){
             callback.onUserReceived(null);
             return;
         }
@@ -78,19 +75,15 @@ public class User {
         String password = snapshot.child("password").getValue(String.class);
         String email = snapshot.child("email").getValue(String.class);
 
-        Log.d("TAG", "received user from snapshot: " + new User(username,password, email));
 
         return new User(username,password, email);
     }
 
-    public static void addToRoom(Context context, String username, String roomCode){
-        DatabaseReference reference;
-        try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void addToRoom(String username, String roomCode){
+        DatabaseReference reference = FirebaseManager.getReference("users");
+        if (reference == null)
             return;
-        }
+
         reference.child(username).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
