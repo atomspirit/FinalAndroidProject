@@ -118,6 +118,7 @@ public class JoinGameFragment extends Fragment {
 
                     // go to ActiveGameActivity
                     Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+                    intent.putExtra("room_code", roomCode);
                     getActivity().startActivity(intent);
 
                 } else {
