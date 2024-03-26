@@ -11,7 +11,7 @@ public abstract class FirebaseManager {
     public static DatabaseReference getReference(String path) {
         DatabaseReference reference;
         try {
-            reference = FirebaseDatabase.getInstance("https://finalandroidproject-759f0-default-rtdb.europe-west1.firebasedatabase.app/").getReference(path);
+            reference = FirebaseDatabase.getInstance(URL).getReference(path);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

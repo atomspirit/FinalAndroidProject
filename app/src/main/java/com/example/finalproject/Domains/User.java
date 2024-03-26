@@ -110,6 +110,30 @@ public class User {
             }
         });
     }
+    public void removeRoom(Room room)
+    {
+        // Remove this room from user->rooms
+
+        DatabaseReference reference = FirebaseManager.getReference("users");
+        if(reference == null)
+            return;
+
+        reference.child(this.getUsername()).child("rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot child : snapshot.getChildren()){
+                    if(child.getValue(String.class).equals(room.getCode())){
+                        child.getRef().removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
 
     // Getters and setters ------------------------------------------------------------------------

@@ -21,6 +21,7 @@ import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Fragments.GameFragment;
 import com.example.finalproject.Fragments.MainNFCFragment;
 import com.example.finalproject.Fragments.OptionsFragment;
+import com.example.finalproject.Fragments.ParticipantsListFragment;
 import com.example.finalproject.Fragments.ProfileFragment;
 import com.example.finalproject.Fragments.RoomInfoFragment;
 import com.example.finalproject.R;
@@ -85,6 +86,7 @@ public class ActiveGameActivity extends AppCompatActivity {
 
         VPAdapter vpAdapter = new VPAdapter(this);
         vpAdapter.addFragment(new MainNFCFragment(), "Main");
+        vpAdapter.addFragment(new ParticipantsListFragment(), "Players");
         vpAdapter.addFragment(new RoomInfoFragment(), "Info");
         viewPager.setAdapter(vpAdapter);
 

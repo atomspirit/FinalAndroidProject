@@ -164,6 +164,35 @@ public class Room {
             }
         });
     }
+    public void leave(Context context, User user){
+        // TODO: if the user is the host delete the game and add an alertDialog
+
+
+        // Remove this room from user->rooms
+        user.removeRoom(this);
+
+
+        // Remove this user from room->participants
+
+        participants.remove(user);
+        updateParticipants(context);
+
+        if(participants.isEmpty())
+            delete();
+
+    }
+    private void delete()
+    {
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+        if(reference == null) return;
+        reference.child(code).removeValue();
+
+        for(User user : participants)
+        {
+            user.removeRoom(this);
+        }
+    }
+
 
     // Custom deserialization method
     public static Room fromSnapshot(DataSnapshot snapshot) {
