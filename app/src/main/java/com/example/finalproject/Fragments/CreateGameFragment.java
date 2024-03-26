@@ -98,7 +98,7 @@ public class CreateGameFragment extends Fragment  {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 etCode.setError(null);
                 if(snapshot.exists()){
-                    etCode.setError("Username already exists");
+                    etCode.setError("A room with that code already exists");
                     etCode.requestFocus();
                 }
                 else {
