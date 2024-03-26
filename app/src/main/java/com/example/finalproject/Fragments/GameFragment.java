@@ -1,9 +1,11 @@
 package com.example.finalproject.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,6 +84,7 @@ public class GameFragment extends Fragment implements RVInterface {
 
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initComponent(View view)
     {
         games = new ArrayList<>();
@@ -88,10 +92,23 @@ public class GameFragment extends Fragment implements RVInterface {
         tvEmptyRooms = view.findViewById(R.id.tvEmptyRooms);
 
         ivAddGame = view.findViewById(R.id.ivAddGame);
-        ivAddGame.setOnClickListener(new View.OnClickListener() {
+        ivAddGame.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                showPopup();
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change text color on press
+                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(),R.color.primaryPressed));
+                        showPopup();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // Change text color back on release
+                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(),R.color.primary));
+
+
+                        return true;
+                }
+                return false;
             }
         });
         createJoinGame = new Dialog(view.getContext());

@@ -69,6 +69,6 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
     public void onItemClicked(int position) {
         Intent intent = new Intent(getContext(), UserProfileActivity.class);
         intent.putExtra("username", participants.get(position).getUsername());
-        // TODO: startActivity userProfile
+        startActivity(intent);
     }
 }

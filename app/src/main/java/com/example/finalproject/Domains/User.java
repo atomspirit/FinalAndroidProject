@@ -134,6 +134,29 @@ public class User {
             }
         });
     }
+    public static void createUserFromUsername(String username, UserCallback callback) {
+        DatabaseReference reference = FirebaseManager.getReference("users");
+        if (reference == null) return;
+
+        Query query=reference.orderByChild("username").equalTo(username);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    User user = User.fromSnapshot(snapshot.child(username));
+                    callback.onUserReceived(user);
+                } else {
+                    callback.onUserReceived(null);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onUserReceived(null);
+            }
+        });
+    }
 
 
     // Getters and setters ------------------------------------------------------------------------

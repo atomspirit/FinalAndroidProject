@@ -1,10 +1,12 @@
 package com.example.finalproject.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -43,16 +46,30 @@ public class ActiveGameActivity extends AppCompatActivity {
         initComponent();
         setupTabLayout();
     }
+    @SuppressLint("ClickableViewAccessibility")
     private void initComponent()
     {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         tvGameTitle = findViewById(R.id.tvGameTitle);
         ivBack = findViewById(R.id.ivBack);
-        ivBack.setOnClickListener(new View.OnClickListener() {
+        ivBack.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                finish();
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change text color on press
+                        ivBack.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.primaryPressed));
+                        finish();
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // Change text color back on release
+                        ivBack.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.primary));
+
+
+                        return true;
+                }
+                return false;
             }
         });
 

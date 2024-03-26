@@ -5,6 +5,7 @@
     <color name="action">#FFC491</color>
     <color name="actionPressed">#A5764D</color>
     <color name="primary">#EAEAEA</color>
+    <color name="primaryPressed">#808080</color>
     <color name="secondary">#AAAAAA</color>
     <color name="fillPrimary">#2D2D2D</color>
     <color name="fillSecondary">#424242</color>
