@@ -3,11 +3,14 @@ package com.example.finalproject.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -66,6 +69,8 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
+    @SuppressLint("ClickableViewAccessibility")
     private void initComponents()
     {
         etPassword = findViewById(R.id.etPassword);
@@ -73,10 +78,22 @@ public class SignUpActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         motionLayout = findViewById(R.id.motion_layout_login);
         tvMoveToSignIn = findViewById(R.id.tvMoveToSignIn);
-        tvMoveToSignIn.setOnClickListener(new View.OnClickListener() {
+        tvMoveToSignIn.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change text color on press
+                        tvMoveToSignIn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.primaryPressed));
+                        startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // Change text color back on release
+                        tvMoveToSignIn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.primary));
+
+                        return true;
+                }
+                return false;
             }
         });
         btSignUp = findViewById(R.id.btSignUp);

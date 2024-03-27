@@ -2,7 +2,9 @@ package com.example.finalproject.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -111,6 +113,22 @@ public class ActiveGameActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             tab.setText(vpAdapter.getFragmentTitle(position));
         }).attach();
+    }
+
+    // NFC ----------------------------------------------------------------------------------------
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            // Get the currently selected fragment
+            int selectedTabIndex = tabLayout.getSelectedTabPosition();
+            Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + selectedTabIndex);
+
+            // Forward the NFC intent to the selected fragment
+            if (selectedFragment instanceof MainNFCFragment) {
+                ((MainNFCFragment) selectedFragment).handleNfcIntent(intent);
+            }
+        }
     }
 
 }

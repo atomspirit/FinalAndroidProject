@@ -3,11 +3,14 @@ package com.example.finalproject.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -15,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.finalproject.Domains.FirebaseManager;
+import com.example.finalproject.Domains.Room;
+import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
@@ -62,16 +67,29 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
+    @SuppressLint("ClickableViewAccessibility")
     private void initComponents()
     {
         etPassword = findViewById(R.id.etPassword);
         etUsername = findViewById(R.id.etUsername);
         motionLayout = findViewById(R.id.motion_layout_login);
         tvMoveToSignUp = findViewById(R.id.tvMoveToSignUp);
-        tvMoveToSignUp.setOnClickListener(new View.OnClickListener() {
+        tvMoveToSignUp.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Change text color on press
+                        tvMoveToSignUp.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.primaryPressed));
+                        startActivity(new Intent(getApplicationContext(), SignUpActivity.class));
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // Change text color back on release
+                        tvMoveToSignUp.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.primary));
+
+                        return true;
+                }
+                return false;
             }
         });
 

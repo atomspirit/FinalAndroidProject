@@ -79,7 +79,7 @@
         android:ems="10"
         android:fontFamily="@font/alegreya_sans"
         android:gravity="center"
-        android:text="Sign In?"
+        android:text="Already have a user? Sign In"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
