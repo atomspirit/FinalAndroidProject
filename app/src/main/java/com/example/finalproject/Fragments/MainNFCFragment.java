@@ -57,7 +57,7 @@ public class MainNFCFragment extends Fragment {
         }
 
         pendingIntent = PendingIntent.getActivity(requireContext(), 0,
-                new Intent(requireContext(), getActivity().getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), flags);
+                new Intent(requireContext(), getActivity().getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP).setAction(NfcAdapter.ACTION_NDEF_DISCOVERED), flags);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -135,13 +135,17 @@ public class MainNFCFragment extends Fragment {
 
             Log.d("NFC", "intent has right action");
 
+
             // Handle NFC data received here
             NdefMessage[] messages = getNdefMessages(intent);
+            Log.d("NFC", "message: " + messages);
+
             if (messages != null && messages.length > 0) {
                 // Extracting the message from NdefRecord
                 NdefRecord record = messages[0].getRecords()[0];
                 String messagePayload = new String(record.getPayload(), Charset.forName("UTF-8"));
 
+                Log.d("NFC","Received NFC message: " + messagePayload);
                 // Display the message in a Toast
                 Toast.makeText(requireContext(), "Received NFC message: " + messagePayload, Toast.LENGTH_LONG).show();
             }
