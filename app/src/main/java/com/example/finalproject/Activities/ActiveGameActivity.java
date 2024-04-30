@@ -51,8 +51,6 @@ public class ActiveGameActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void initComponent()
     {
-        tabLayout = findViewById(R.id.tabLayout);
-        viewPager = findViewById(R.id.viewPager);
         tvGameTitle = findViewById(R.id.tvGameTitle);
         ivBack = findViewById(R.id.ivBack);
         ivBack.setOnTouchListener(new View.OnTouchListener() {
@@ -119,13 +117,20 @@ public class ActiveGameActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+        Log.d("NFC", "Received intent action: " + intent.getAction());
+
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            Log.d("NFC", "Received TAG_DISCOVERED intent");
+
             // Get the currently selected fragment
             int selectedTabIndex = tabLayout.getSelectedTabPosition();
-            Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("android:switcher:" + viewPager.getId() + ":" + selectedTabIndex);
 
+            Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("f" + selectedTabIndex);
+
+            Log.d("NFC", "current tab: " + selectedTabIndex);
             // Forward the NFC intent to the selected fragment
             if (selectedFragment instanceof MainNFCFragment) {
+                Log.d("NFC", "handling NFC..");
                 ((MainNFCFragment) selectedFragment).handleNfcIntent(intent);
             }
         }

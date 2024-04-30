@@ -44,5 +44,7 @@ public class MainActivity extends AppCompatActivity {
             tab.setText(vpAdapter.getFragmentTitle(position));
         }).attach();
 
+        viewPager.setCurrentItem(1,false);
+
     }
 }

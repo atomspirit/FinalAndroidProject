@@ -10,12 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/btTransfer"
+
+
+        <ImageButton
+            android:id="@+id/ibtTransfer"
             android:layout_width="200dp"
             android:layout_height="200dp"
 
-            android:background="@drawable/background_tag"
+            android:background="@drawable/background_nfc_idle"
 
             android:text="Button"
             app:layout_constraintBottom_toBottomOf="parent"
