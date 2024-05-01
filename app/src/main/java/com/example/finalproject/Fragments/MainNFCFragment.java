@@ -50,14 +50,6 @@ public class MainNFCFragment extends Fragment {
             // NFC is not supported on this device. Handle this case appropriately.
 
         }
-
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            flags |= PendingIntent.FLAG_MUTABLE; // or use FLAG_IMMUTABLE if it's appropriate
-        }
-
-        pendingIntent = PendingIntent.getActivity(requireContext(), 0,
-                new Intent(requireContext(), getActivity().getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), flags);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -109,15 +101,10 @@ public class MainNFCFragment extends Fragment {
 
         //if(sendingNfc) return ; // Use this line to block multiple send actions
 
-        // Create an NDEF message with "hello world" payload
-        NdefRecord record = createMime(MIME_TYPE, "hello world".getBytes(Charset.forName("UTF-8")));
-        NdefMessage message = new NdefMessage(new NdefRecord[]{record});
+        setPendingIntent();
 
         // Enable foreground dispatch to send NFC message
         nfcAdapter.enableForegroundDispatch(getActivity(), pendingIntent, null, null);
-
-        // Send the NDEF message
-        // Create the NDEF message callback
 
         // Set the NDEF message callback
         if (nfcAdapter != null) {
@@ -135,34 +122,27 @@ public class MainNFCFragment extends Fragment {
 
             Log.d("NFC", "intent has right action");
 
-            // Handle NFC data received here
-            NdefMessage[] messages = getNdefMessages(intent);
-            if (messages != null && messages.length > 0) {
-                // Extracting the message from NdefRecord
-                NdefRecord record = messages[0].getRecords()[0];
-                String messagePayload = new String(record.getPayload(), Charset.forName("UTF-8"));
 
-                // Display the message in a Toast
-                Toast.makeText(requireContext(), "Received NFC message: " + messagePayload, Toast.LENGTH_LONG).show();
-            }
-        }
+            String senderUsername = intent.getStringExtra("sender");
 
-    }
-    private NdefMessage[] getNdefMessages(Intent intent) {
-        NdefMessage[] messages = null;
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
-            Parcelable[] rawMessages =
-                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (rawMessages != null) {
-                messages = new NdefMessage[rawMessages.length];
-                for (int i = 0; i < rawMessages.length; i++) {
-                    messages[i] = (NdefMessage) rawMessages[i];
-                }
-            }
+            Toast.makeText(requireContext(),"msg: " + senderUsername, Toast.LENGTH_LONG).show();
         }
-        return messages;
     }
 
+    private void setPendingIntent()
+    {
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            flags |= PendingIntent.FLAG_MUTABLE; // or use FLAG_IMMUTABLE if it's appropriate
+        }
+
+        Intent intent = new Intent(requireContext(), getActivity().getClass())
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .setAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
+                .putExtra("sender", "hello world!");
+        pendingIntent = PendingIntent.getActivity(requireContext(), 0,
+                intent, flags);
+    }
 
     /*@Override
     public NdefMessage createNdefMessage(NfcEvent event) {
