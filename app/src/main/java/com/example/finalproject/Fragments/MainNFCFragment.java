@@ -144,6 +144,7 @@ public class MainNFCFragment extends Fragment {
                 intent, flags);
     }
 
+
     /*@Override
     public NdefMessage createNdefMessage(NfcEvent event) {
         String text = ("Beam me up, Android!\n\n" +
