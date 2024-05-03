@@ -119,7 +119,7 @@ public class ActiveGameActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Log.d("NFC", "Received intent action: " + intent.getAction());
 
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+        if (true) { //NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
             Log.d("NFC", "Received TAG_DISCOVERED intent");
 
             // Get the currently selected fragment

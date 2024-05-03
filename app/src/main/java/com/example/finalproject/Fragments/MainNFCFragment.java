@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.finalproject.Activities.SignUpActivity;
+import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.NFCMessageCallback;
 import com.example.finalproject.R;
 
@@ -50,6 +51,8 @@ public class MainNFCFragment extends Fragment {
             // NFC is not supported on this device. Handle this case appropriately.
 
         }
+        setPendingIntent();
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -96,29 +99,22 @@ public class MainNFCFragment extends Fragment {
         }
         else {
             Toast.makeText(requireContext(), "NFC not available on this device", Toast.LENGTH_SHORT).show();
+            Log.e("NFC", "NFC is not supported on this device");
         }
 
 
         //if(sendingNfc) return ; // Use this line to block multiple send actions
 
-        setPendingIntent();
 
         // Enable foreground dispatch to send NFC message
         nfcAdapter.enableForegroundDispatch(getActivity(), pendingIntent, null, null);
-
-        // Set the NDEF message callback
-        if (nfcAdapter != null) {
-
-        } else {
-            Log.e("NFC", "NFC is not supported on this device");
-        }
     }
 
 
     // NEW CODE - NEED TESTING
     public void handleNfcIntent(Intent intent) {
         Log.d("NFC", "received nfc");
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+        if (true) { //NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
 
             Log.d("NFC", "intent has right action");
 
@@ -131,66 +127,22 @@ public class MainNFCFragment extends Fragment {
 
     private void setPendingIntent()
     {
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-            flags |= PendingIntent.FLAG_MUTABLE; // or use FLAG_IMMUTABLE if it's appropriate
-        }
+        User.getCurrentUser(requireContext(), new User.UserCallback() {
+            @Override
+            public void onUserReceived(User user) {
+                int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    flags |= PendingIntent.FLAG_MUTABLE; // or use FLAG_IMMUTABLE if it's appropriate
+                }
 
-        Intent intent = new Intent(requireContext(), getActivity().getClass())
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .setAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
-                .putExtra("sender", "hello world!");
-        pendingIntent = PendingIntent.getActivity(requireContext(), 0,
-                intent, flags);
+                Intent intent = new Intent(requireContext(), getActivity().getClass())
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .setAction(NfcAdapter.ACTION_NDEF_DISCOVERED)
+                        .putExtra("sender", user.getUsername());
+                pendingIntent = PendingIntent.getActivity(requireContext(), 0,
+                        intent, flags);
+            }
+        });
     }
-
-
-    /*@Override
-    public NdefMessage createNdefMessage(NfcEvent event) {
-        String text = ("Beam me up, Android!\n\n" +
-                "Beam Time: " + System.currentTimeMillis());
-        NdefMessage msg = new NdefMessage(
-                new NdefRecord[] { createMime(
-                        "application/vnd.com.example.android.beam", text.getBytes())
-                        *//**
-                         * The Android Application Record (AAR) is commented out. When a device
-                         * receives a push with an AAR in it, the application specified in the AAR
-                         * is guaranteed to run. The AAR overrides the tag dispatch system.
-                         * You can add it back in to guarantee that this
-                         * activity starts when receiving a beamed message. For now, this code
-                         * uses the tag dispatch system.
-                        *//*
-                        ,NdefRecord.createApplicationRecord("com.example.android.beam")
-                });
-        return msg;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        // onResume gets called after this to handle the intent
-        setIntent(intent);
-    }
-
-    *//**
-     * Parses the NDEF Message from the intent and prints to the TextView
-     *//*
-    void processIntent(Intent intent) {
-        textView = (TextView) findViewById(R.id.textView);
-        Parcelable[] rawMsgs = intent.getParcelableArrayExtra(
-                NfcAdapter.EXTRA_NDEF_MESSAGES);
-        // only one message sent during the beam
-        NdefMessage msg = (NdefMessage) rawMsgs[0];
-        // record 0 contains the MIME type, record 1 is the AAR, if present
-        textView.setText(new String(msg.getRecords()[0].getPayload()));
-    }*/
 
 }
