@@ -231,7 +231,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
      * Either {@link #onAdvertisingStarted()} or {@link #onAdvertisingFailed()} will be called once
      * we've found out if we successfully entered this mode.
      */
-    public void startAdvertising() {
+    protected void startAdvertising() {
         mIsAdvertising = true;
         final String localEndpointName = getName();
 
@@ -264,13 +264,13 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
     }
 
     /** Stops advertising. */
-    public void stopAdvertising() {
+    protected void stopAdvertising() {
         mIsAdvertising = false;
         mConnectionsClient.stopAdvertising();
     }
 
     /** Returns {@code true} if currently advertising. */
-    public boolean isAdvertising() {
+    protected boolean isAdvertising() {
         return mIsAdvertising;
     }
 
@@ -319,7 +319,7 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
      * {@link #onDiscoveryStarted()} or {@link #onDiscoveryFailed()} will be called once we've found
      * out if we successfully entered this mode.
      */
-    public void startDiscovering() {
+    protected void startDiscovering() {
         mIsDiscovering = true;
         mDiscoveredEndpoints.clear();
         DiscoveryOptions.Builder discoveryOptions = new DiscoveryOptions.Builder();
@@ -367,13 +367,13 @@ public abstract class ConnectionsActivity extends AppCompatActivity {
     }
 
     /** Stops discovery. */
-    public void stopDiscovering() {
+    protected void stopDiscovering() {
         mIsDiscovering = false;
         mConnectionsClient.stopDiscovery();
     }
 
     /** Returns {@code true} if currently discovering. */
-    public boolean isDiscovering() {
+    protected boolean isDiscovering() {
         return mIsDiscovering;
     }
 

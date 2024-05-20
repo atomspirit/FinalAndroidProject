@@ -24,6 +24,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.finalproject.Activities.ConnectionsActivity;
+import com.example.finalproject.Activities.NearbyShareActivity;
 import com.example.finalproject.Activities.UserProfileActivity;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.Interfaces.RVInterface;
@@ -79,6 +80,7 @@ public class MainNFCFragment extends Fragment implements RVInterface {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_nfc, container, false);
 
+        startActivity(new Intent(getActivity(), NearbyShareActivity.class));
 
         sDiscover = rootView.findViewById(R.id.sDiscover);
         sAdvertise = rootView.findViewById(R.id.sAdvertise);

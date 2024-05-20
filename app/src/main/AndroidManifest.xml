@@ -25,6 +25,9 @@
         android:theme="@style/Base.Theme.FinalProject"
         tools:targetApi="34">
         <activity
+            android:name=".Activities.NearbyShareActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.ConnectionActivity"
             android:exported="false" />
         <activity
@@ -47,7 +50,7 @@
         </activity>
         <activity
             android:name=".Activities.ActiveGameActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
     </application>
 
 </manifest>
