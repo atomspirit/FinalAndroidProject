@@ -1,6 +1,8 @@
 package com.example.finalproject.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -61,22 +63,7 @@ public class RoomInfoFragment extends Fragment {
                         // Change text color on press
                         tvLeaveRoom.setTextColor(ContextCompat.getColor(requireContext(), R.color.actionPressed));
 
-                        Room.getCurrentRoom(getActivity(), new Room.RoomCallback() {
-                            @Override
-                            public void onRoomReceived(Room room) {
-                                User.getCurrentUser(getActivity(), new User.UserCallback() {
-
-                                    @Override
-                                    public void onUserReceived(User user) {
-
-                                        room.leave(getContext(), user);
-
-                                        getActivity().finish();
-
-                                    }
-                                });
-                            }
-                        });
+                        showLeaveRoomDialog();
 
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -100,6 +87,47 @@ public class RoomInfoFragment extends Fragment {
         });
 
         return view;
+    }
+    private void showLeaveRoomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Once you leave a room you'll need to re-join the room.")
+                .setTitle("Leave Room?")
+                .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Add code here to handle leaving the room
+                        leaveRoom();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                    }
+                });
+
+        // Create the AlertDialog object and show it
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void leaveRoom()
+    {
+        Room.getCurrentRoom(getActivity(), new Room.RoomCallback() {
+            @Override
+            public void onRoomReceived(Room room) {
+                User.getCurrentUser(getActivity(), new User.UserCallback() {
+
+                    @Override
+                    public void onUserReceived(User user) {
+
+                        room.leave(getContext(), user);
+
+                        getActivity().finish();
+
+                    }
+                });
+            }
+        });
     }
 
 }

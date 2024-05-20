@@ -114,26 +114,19 @@ public class ActiveGameActivity extends AppCompatActivity {
     }
 
     // NFC ----------------------------------------------------------------------------------------
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        Log.d("NFC", "Received intent action: " + intent.getAction());
 
-        if (true) { //NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())
-            Log.d("NFC", "Received TAG_DISCOVERED intent");
+    private MainNFCFragment getNFCFragmentIfActive()
+    {
+        // Get the currently selected fragment
+        int selectedTabIndex = tabLayout.getSelectedTabPosition();
 
-            // Get the currently selected fragment
-            int selectedTabIndex = tabLayout.getSelectedTabPosition();
+        Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("f" + selectedTabIndex);
 
-            Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("f" + selectedTabIndex);
-
-            Log.d("NFC", "current tab: " + selectedTabIndex);
-            // Forward the NFC intent to the selected fragment
-            if (selectedFragment instanceof MainNFCFragment) {
-                Log.d("NFC", "handling NFC..");
-                ((MainNFCFragment) selectedFragment).handleNfcIntent(intent);
-            }
+        // Forward the NFC intent to the selected fragment
+        if (selectedFragment instanceof MainNFCFragment) {
+            return (MainNFCFragment) selectedFragment;
         }
+        return null;
     }
 
 }
