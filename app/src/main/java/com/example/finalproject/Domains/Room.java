@@ -193,6 +193,12 @@ public class Room {
         }
     }
 
+    public static void setCatcher(String roomCode, String username)
+    {
+        DatabaseReference reference = FirebaseManager.getReference("rooms");
+        reference.child(roomCode).child("it").setValue(username);
+    }
+
 
     // Custom deserialization method
     public static Room fromSnapshot(DataSnapshot snapshot) {

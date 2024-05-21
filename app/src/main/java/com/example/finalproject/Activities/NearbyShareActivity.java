@@ -2,12 +2,15 @@ package com.example.finalproject.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.finalproject.Domains.Room;
+import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
@@ -19,11 +22,19 @@ public class NearbyShareActivity extends ConnectionsActivity {
 
     private static final String TAG = "NearbyShare";
     private static final String SERVICE_ID = "com.example.finalproject.SERVICE_ID";
+    private String username;
+    private String roomCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_share);
+
+        username = getApplicationContext().getSharedPreferences("shared_pref",
+                Context.MODE_PRIVATE).getString("current_username", "");
+        roomCode = getApplicationContext().getSharedPreferences("shared_pref",
+                Context.MODE_PRIVATE).getString("current_room", "");
+
 
         Button startAdvertisingButton = findViewById(R.id.btn_start_advertising);
         startAdvertisingButton.setOnClickListener(new View.OnClickListener() {
@@ -60,13 +71,12 @@ public class NearbyShareActivity extends ConnectionsActivity {
 
     @Override
     protected String getName() {
-
-        return android.os.Build.MODEL;
+        return username;
     }
 
     @Override
     protected String getServiceId() {
-        return SERVICE_ID;
+        return roomCode;
     }
 
     @Override
@@ -109,7 +119,7 @@ public class NearbyShareActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Log.d(TAG, "Connected to endpoint: " + endpoint.getName());
-        String message = "greetings, human.";
+        String message = "greetings, human. im, " + username;
         Payload payload = Payload.fromBytes(message.getBytes(StandardCharsets.UTF_8));
         send(payload);
     }
@@ -121,9 +131,12 @@ public class NearbyShareActivity extends ConnectionsActivity {
 
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
+        if(!isDiscovering())
+            return;
         String receivedMessage = new String(payload.asBytes(), StandardCharsets.UTF_8);
         Log.d(TAG, "Received payload from endpoint: " + endpoint.getName() + " msg: " + receivedMessage);
         Toast.makeText(getApplicationContext(),"msg: " + receivedMessage,Toast.LENGTH_LONG).show();
+        Room.setCatcher(roomCode,username);
     }
 
     @Override
