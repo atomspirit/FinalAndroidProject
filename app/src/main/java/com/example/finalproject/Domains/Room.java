@@ -181,7 +181,7 @@ public class Room {
             delete();
 
     }
-    private void delete()
+    public void delete()
     {
         DatabaseReference reference = FirebaseManager.getReference("rooms");
         if(reference == null) return;

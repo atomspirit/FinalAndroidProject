@@ -2,6 +2,7 @@ package com.example.finalproject.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.BoringLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,7 +37,10 @@ import java.util.Objects;
 
 public class RoomInfoFragment extends Fragment {
 
-    TextView tvRoomCode, tvCreationDate, tvLeaveRoom;
+    TextView tvRoomCode, tvCreationDate, tvLeaveRoom, tvCreatedBy;
+    Boolean isHost = false;
+    Room mRoom;
+
     public RoomInfoFragment() {
         // Required empty public constructor
     }
@@ -51,8 +56,25 @@ public class RoomInfoFragment extends Fragment {
         tvRoomCode = view.findViewById(R.id.tvRoomCode);
         tvCreationDate = view.findViewById(R.id.tvCreationDate);
         tvLeaveRoom = view.findViewById(R.id.tvLeave);
+        tvCreatedBy = view.findViewById(R.id.tvCreatedBy);
 
 
+        Room.getCurrentRoom(requireContext(), new Room.RoomCallback() {
+            @Override
+            public void onRoomReceived(Room room) {
+                String host = room.getHost().getUsername();
+                tvCreatedBy.setText("Created by: " + host);
+                String username = requireContext().getSharedPreferences("shared_pref",
+                        Context.MODE_PRIVATE).getString("current_username", "");
+                if(host.equals(username))
+                {
+                    tvLeaveRoom.setText("Delete Room");
+                    isHost = true;
+                }
+
+                mRoom = room;
+            }
+        });
         // set on click leave
         tvLeaveRoom.setOnTouchListener(new View.OnTouchListener() {
 
@@ -63,7 +85,10 @@ public class RoomInfoFragment extends Fragment {
                         // Change text color on press
                         tvLeaveRoom.setTextColor(ContextCompat.getColor(requireContext(), R.color.actionPressed));
 
-                        showLeaveRoomDialog();
+                        if(isHost)
+                            showDeleteRoomDialog();
+                        else
+                            showLeaveRoomDialog();
 
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -112,22 +137,49 @@ public class RoomInfoFragment extends Fragment {
     }
     private void leaveRoom()
     {
-        Room.getCurrentRoom(getActivity(), new Room.RoomCallback() {
+        User.getCurrentUser(getActivity(), new User.UserCallback() {
+
             @Override
-            public void onRoomReceived(Room room) {
-                User.getCurrentUser(getActivity(), new User.UserCallback() {
+            public void onUserReceived(User user) {
 
-                    @Override
-                    public void onUserReceived(User user) {
+                mRoom.leave(getContext(), user);
 
-                        room.leave(getContext(), user);
+                getActivity().finish();
 
-                        getActivity().finish();
-
-                    }
-                });
             }
         });
     }
 
+    private void showDeleteRoomDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setMessage("Be careful! This action cannot be un-done")
+                .setTitle("Delete Room?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Add code here to handle leaving the room
+                        deleteRoom();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                    }
+                });
+
+        // Create the AlertDialog object and show it
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void deleteRoom()
+    {
+        /*ArrayList<User> parts = mRoom.getParticipants();
+        for(User user : parts)
+        {
+            mRoom.leave(requireContext(),user);
+        }*/
+        mRoom.delete();
+        getActivity().finish();
+    }
 }
