@@ -36,11 +36,5 @@
             android:layout_marginStart="30dp"
             android:layout_toEndOf="@id/ivUserIcon"/>
 
-
-
-
-
     </RelativeLayout>
-
-
 </androidx.cardview.widget.CardView>

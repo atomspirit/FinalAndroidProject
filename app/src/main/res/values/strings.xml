@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">FinalAndroidProject</string>
+    <string name="app_name">NearbyArcade</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about">Hello, Im Yoav Dagan.\n I build this app as my final android project.</string>
+
 </resources>

@@ -123,7 +123,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
 
     @Override
     protected String getServiceId() {
-        return roomCode;
+        return roomCode + ".rock_paper_scissors";
     }
 
     @Override
@@ -160,7 +160,8 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
         Log.d(TAG, "Connection initiated with endpoint: " + endpoint.getName());
-        acceptConnection(endpoint);
+        if(!username.equals(endpoint.getName()))
+            acceptConnection(endpoint);
     }
 
     @Override
@@ -184,7 +185,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
 
         String receivedChoice = new String(payload.asBytes(), StandardCharsets.UTF_8);
         logD("Received payload from endpoint: " + endpoint.getName() + " choice: " + receivedChoice);
-        logText("Opponent's choice: " + receivedChoice);
+        logText(endpoint.getName() + " played a move. ");
         opponentChoice = receivedChoice;
         isMyTurn = true;
         determineWinner();
@@ -270,5 +271,12 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
         if(isDiscovering()) stopDiscovering();
         disconnectFromAllEndpoints();
         finish();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(isAdvertising()) stopAdvertising();
+        if(isDiscovering()) stopDiscovering();
+        disconnectFromAllEndpoints();
     }
 }
