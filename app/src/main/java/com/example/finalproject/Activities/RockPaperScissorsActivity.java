@@ -1,17 +1,17 @@
 package com.example.finalproject.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.finalproject.Domains.Room;
-import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
@@ -19,13 +19,12 @@ import com.google.android.gms.nearby.connection.Strategy;
 
 import java.nio.charset.StandardCharsets;
 
-public class NearbyShareActivity extends ConnectionsActivity {
+public class RockPaperScissorsActivity extends ConnectionsActivity {
 
     // -------------- Connecting logic --------------
-    private static final String TAG = "NearbyShare";
-    private static final String SERVICE_ID = "com.example.finalproject.SERVICE_ID";
     private String username;
     private String roomCode;
+    SwitchCompat advertisingButton, discoveringButton;
 
     // -------------- Turn based logic --------------
     private static final String CHOICE_1 = "Rock";
@@ -35,12 +34,13 @@ public class NearbyShareActivity extends ConnectionsActivity {
     private String myChoice;
     private String opponentChoice;
     private TextView tvScore, tvLog;
+    LinearLayout gameLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nearby_share);
+        setContentView(R.layout.activity_rock_paper_scissors);
 
         // -------------- Connecting logic --------------
         username = getApplicationContext().getSharedPreferences("shared_pref",
@@ -49,43 +49,39 @@ public class NearbyShareActivity extends ConnectionsActivity {
                 Context.MODE_PRIVATE).getString("current_room", "");
 
 
-        Button startAdvertisingButton = findViewById(R.id.btn_start_advertising);
-        startAdvertisingButton.setOnClickListener(new View.OnClickListener() {
+        advertisingButton = findViewById(R.id.switch_advertising);
+        advertisingButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                startAdvertising();
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    startAdvertising();
+                else {
+                    stopAdvertising();
+                    disconnectFromAllEndpoints();
+                }
+
             }
         });
 
-        Button stopAdvertisingButton = findViewById(R.id.btn_stop_advertising);
-        stopAdvertisingButton.setOnClickListener(new View.OnClickListener() {
+        discoveringButton = findViewById(R.id.switch_discovering);
+        discoveringButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                stopAdvertising();
-                disconnectFromAllEndpoints();
-            }
-        });
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    startDiscovering();
+                else{
+                    stopDiscovering();
+                    disconnectFromAllEndpoints();
+                }
 
-        Button startDiscoveringButton = findViewById(R.id.btn_start_discovering);
-        startDiscoveringButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startDiscovering();
-            }
-        });
-
-        Button stopDiscoveringButton = findViewById(R.id.btn_stop_discovering);
-        stopDiscoveringButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stopDiscovering();
-                disconnectFromAllEndpoints();
             }
         });
 
         // -------------- Turn based logic --------------
         tvScore = findViewById(R.id.tvScore);
         tvLog = findViewById(R.id.tvLog);
+        gameLayout = findViewById(R.id.gameLayout);
+        gameLayout.setVisibility(View.GONE);
 
         Button choice1Button = findViewById(R.id.btRock);
         choice1Button.setOnClickListener(new View.OnClickListener() {
@@ -108,6 +104,14 @@ public class NearbyShareActivity extends ConnectionsActivity {
             @Override
             public void onClick(View v) {
                 makeChoice(CHOICE_3);
+            }
+        });
+
+        Button btEndGame = findViewById(R.id.btEndGame);
+        btEndGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                endGame();
             }
         });
     }
@@ -162,12 +166,7 @@ public class NearbyShareActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Log.d(TAG, "Connected to endpoint: " + endpoint.getName());
-        /*String message = "greetings, human. im, " + username;
-        Payload payload = Payload.fromBytes(message.getBytes(StandardCharsets.UTF_8));
-        send(payload);*/
-        isMyTurn = isAdvertising();
-        Toast.makeText(getApplicationContext(),"Connected to endpoint: " + endpoint.getName()
-                ,Toast.LENGTH_LONG).show();
+        startGame(endpoint);
     }
 
     @Override
@@ -185,7 +184,7 @@ public class NearbyShareActivity extends ConnectionsActivity {
 
         String receivedChoice = new String(payload.asBytes(), StandardCharsets.UTF_8);
         logD("Received payload from endpoint: " + endpoint.getName() + " choice: " + receivedChoice);
-        Toast.makeText(getApplicationContext(), "Opponent's choice: " + receivedChoice, Toast.LENGTH_LONG).show();
+        logText("Opponent's choice: " + receivedChoice);
         opponentChoice = receivedChoice;
         isMyTurn = true;
         determineWinner();
@@ -203,14 +202,15 @@ public class NearbyShareActivity extends ConnectionsActivity {
             return;
         }
         myChoice = choice;
+        logText("Choice made: " + choice);
         sendPayloadToOpponent(choice);
         isMyTurn = false;
-        Toast.makeText(this, "Choice made: " + choice, Toast.LENGTH_SHORT).show();
     }
 
     private void sendPayloadToOpponent(String choice) {
         Payload payload = Payload.fromBytes(choice.getBytes(StandardCharsets.UTF_8));
         send(payload);
+        isMyTurn = false;
         determineWinner();
     }
 
@@ -228,19 +228,19 @@ public class NearbyShareActivity extends ConnectionsActivity {
                 result = "You win!";
                 int score = Integer.parseInt(tvScore.getText().toString());
                 score++;
-                tvScore.setText(score);
+                tvScore.setText("" + score);
             } else {
                 result = "You lose!";
             }
-            tvLog.setText(result);
-            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+            logText(result);
+            //Toast.makeText(this, result, Toast.LENGTH_LONG).show();
 
             // Reset choices for the next turn
             myChoice = null;
             opponentChoice = null;
 
             // Determine who goes first in the next turn (toggle isMyTurn)
-            isMyTurn = !isMyTurn;
+            //isMyTurn = !isMyTurn;
 
             // Notify the player whose turn it is
             if (isMyTurn) {
@@ -249,5 +249,26 @@ public class NearbyShareActivity extends ConnectionsActivity {
                 Toast.makeText(this, "Opponent's turn!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void logText(String text)
+    {
+        tvLog.setText(tvLog.getText() + text + "\n");
+    }
+
+    private void startGame(Endpoint opponent)
+    {
+        isMyTurn = isAdvertising();
+        logText("Game started. Opponent: " + opponent.getName());
+        discoveringButton.setVisibility(View.GONE);
+        advertisingButton.setVisibility(View.GONE);
+        gameLayout.setVisibility(View.VISIBLE);
+    }
+    private void endGame()
+    {
+        if(isAdvertising()) stopAdvertising();
+        if(isDiscovering()) stopDiscovering();
+        disconnectFromAllEndpoints();
+        finish();
     }
 }

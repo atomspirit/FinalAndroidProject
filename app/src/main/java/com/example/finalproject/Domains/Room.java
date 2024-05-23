@@ -193,31 +193,6 @@ public class Room {
         }
     }
 
-    public static void setCatcher(String roomCode, String username)
-    {
-        DatabaseReference reference = FirebaseManager.getReference("rooms");
-        reference.child(roomCode).child("it").setValue(username);
-    }
-    public static void getCatcher(String roomCode, FirebaseManager.DataCallback callback)
-    {
-        DatabaseReference reference = FirebaseManager.getReference("rooms");
-        reference.child(roomCode).child("it").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // Assuming the value at "it" is of type String
-                    String username = dataSnapshot.getValue(String.class);
-                    callback.onDataReceived(username);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                callback.onDataReceived("");
-            }
-        });
-    }
-
 
     // Custom deserialization method
     public static Room fromSnapshot(DataSnapshot snapshot) {

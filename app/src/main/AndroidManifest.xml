@@ -25,7 +25,7 @@
         android:theme="@style/Base.Theme.FinalProject"
         tools:targetApi="34">
         <activity
-            android:name=".Activities.NearbyShareActivity"
+            android:name=".Activities.RockPaperScissorsActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.UserProfileActivity"

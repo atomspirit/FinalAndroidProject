@@ -2,17 +2,12 @@ package com.example.finalproject.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 
@@ -23,11 +18,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Adapters.VPAdapter;
 import com.example.finalproject.Domains.Room;
-import com.example.finalproject.Fragments.GameFragment;
-import com.example.finalproject.Fragments.MainNFCFragment;
-import com.example.finalproject.Fragments.OptionsFragment;
+import com.example.finalproject.Fragments.ArcadeFragment;
 import com.example.finalproject.Fragments.ParticipantsListFragment;
-import com.example.finalproject.Fragments.ProfileFragment;
 import com.example.finalproject.Fragments.RoomInfoFragment;
 import com.example.finalproject.R;
 import com.google.android.material.tabs.TabLayout;
@@ -102,7 +94,7 @@ public class ActiveGameActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.viewPager);
 
         VPAdapter vpAdapter = new VPAdapter(this);
-        vpAdapter.addFragment(new MainNFCFragment(), "Main");
+        vpAdapter.addFragment(new ArcadeFragment(), "Arcade");
         vpAdapter.addFragment(new ParticipantsListFragment(), "Players");
         vpAdapter.addFragment(new RoomInfoFragment(), "Info");
         viewPager.setAdapter(vpAdapter);
@@ -115,7 +107,7 @@ public class ActiveGameActivity extends AppCompatActivity {
 
     // NFC ----------------------------------------------------------------------------------------
 
-    private MainNFCFragment getNFCFragmentIfActive()
+    private ArcadeFragment getNFCFragmentIfActive()
     {
         // Get the currently selected fragment
         int selectedTabIndex = tabLayout.getSelectedTabPosition();
@@ -123,8 +115,8 @@ public class ActiveGameActivity extends AppCompatActivity {
         Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("f" + selectedTabIndex);
 
         // Forward the NFC intent to the selected fragment
-        if (selectedFragment instanceof MainNFCFragment) {
-            return (MainNFCFragment) selectedFragment;
+        if (selectedFragment instanceof ArcadeFragment) {
+            return (ArcadeFragment) selectedFragment;
         }
         return null;
     }
