@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText etUsername, etPassword, etEmail;
+    EditText etUsername, etPassword, etEmail, etBio;
     TextView tvMoveToSignIn;
     MotionLayout motionLayout;
     Button btSignUp;
@@ -76,6 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
+        etBio = findViewById(R.id.etBio);
         motionLayout = findViewById(R.id.motion_layout_login);
         tvMoveToSignIn = findViewById(R.id.tvMoveToSignIn);
         tvMoveToSignIn.setOnTouchListener(new View.OnTouchListener() {
@@ -101,7 +102,8 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Utilities.hideKeyboard(getApplicationContext(), getCurrentFocus());
-                if(Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword) && Utilities.validateEmail(etEmail))
+                if(Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword)
+                        && Utilities.validateEmail(etEmail) && Utilities.validateEditText(etBio, "Bio is required"))
                     signUp();
             }
         });
@@ -118,8 +120,9 @@ public class SignUpActivity extends AppCompatActivity {
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
+        String bio = etBio.getText().toString().trim();
 
-        User user = new User(username,password,email);
+        User user = new User(username,password,email,bio);
 
         Query query = databaseReference.orderByChild("username").equalTo(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {

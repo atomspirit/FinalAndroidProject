@@ -112,6 +112,7 @@ public class SignInActivity extends AppCompatActivity {
     {
         String current_username = getApplicationContext().getSharedPreferences("shared_pref",
                 Context.MODE_PRIVATE).getString("current_username", "");
+        Log.d("AAAA",current_username);
         if(!current_username.equals("")){
             startActivity(new Intent(this, MainActivity.class));
         }

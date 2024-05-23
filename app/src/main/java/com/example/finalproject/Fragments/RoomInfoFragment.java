@@ -2,44 +2,32 @@ package com.example.finalproject.Fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.BoringLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.finalproject.Activities.ActiveGameActivity;
-import com.example.finalproject.Activities.UserProfileActivity;
-import com.example.finalproject.Adapters.RVUserAdapter;
-import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
-import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Objects;
 
 public class RoomInfoFragment extends Fragment {
 
     TextView tvRoomCode, tvCreationDate, tvLeaveRoom, tvCreatedBy;
     Boolean isHost = false;
     Room mRoom;
+
 
     public RoomInfoFragment() {
         // Required empty public constructor
@@ -57,7 +45,6 @@ public class RoomInfoFragment extends Fragment {
         tvCreationDate = view.findViewById(R.id.tvCreationDate);
         tvLeaveRoom = view.findViewById(R.id.tvLeave);
         tvCreatedBy = view.findViewById(R.id.tvCreatedBy);
-
 
         Room.getCurrentRoom(requireContext(), new Room.RoomCallback() {
             @Override
@@ -174,11 +161,6 @@ public class RoomInfoFragment extends Fragment {
     }
     private void deleteRoom()
     {
-        /*ArrayList<User> parts = mRoom.getParticipants();
-        for(User user : parts)
-        {
-            mRoom.leave(requireContext(),user);
-        }*/
         mRoom.delete();
         getActivity().finish();
     }

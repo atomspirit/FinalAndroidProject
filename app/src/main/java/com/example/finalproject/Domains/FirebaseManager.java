@@ -18,4 +18,8 @@ public abstract class FirebaseManager {
         }
         return reference;
     }
+
+    public interface DataCallback {
+        void onDataReceived(String data);
+    }
 }

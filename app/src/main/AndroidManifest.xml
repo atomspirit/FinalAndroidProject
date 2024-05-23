@@ -28,9 +28,6 @@
             android:name=".Activities.NearbyShareActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.ConnectionActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activities.UserProfileActivity"
             android:exported="false" />
         <activity

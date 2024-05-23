@@ -24,7 +24,7 @@ import com.example.finalproject.R;
 
 public class ProfileFragment extends Fragment {
 
-    TextView tvSignOut, tvUserEmail, tvUserPassword, tvUsername;
+    TextView tvSignOut, tvUserEmail, tvUserPassword, tvUsername, tvBio;
 
 
     public ProfileFragment() {
@@ -45,6 +45,7 @@ public class ProfileFragment extends Fragment {
         tvUsername = view.findViewById(R.id.tvUsername);
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
         tvUserPassword = view.findViewById(R.id.tvUserPassword);
+        tvBio = view.findViewById(R.id.tvUserBio);
         tvSignOut = view.findViewById(R.id.tvSignOut);
         tvSignOut.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,6 +74,7 @@ public class ProfileFragment extends Fragment {
                 tvUserEmail.setText("email: " + user.getEmail());
                 tvUserPassword.setText("password: " + user.getPassword());
                 tvUsername.setText(user.getUsername());
+                tvBio.setText(user.getBio());
             }
         });
     }

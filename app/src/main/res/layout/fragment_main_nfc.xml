@@ -11,30 +11,31 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/sDiscover"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/tvHeadline"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discover nearby devices"
-            android:textColor="@color/primary" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/sAdvertise"
-            android:layout_width="match_parent"
+            android:text="You're It!"
+            android:textSize="32sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"/>
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Share device information"
-            android:textColor="@color/primary" />
-        <Button
+            android:text="Click the button to tag someone"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"/>
+
+
+        <ImageButton
+            android:id="@+id/ibConnect"
             android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:id="@+id/btShowDevices"
+            android:layout_height="100dp"
+            android:background="@drawable/background_nfc_idle"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
             />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </LinearLayout>
 

@@ -29,13 +29,15 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String bio;
 
 
     // Constructors -------------------------------------------------------------------------------
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, String bio) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.bio = bio;
     }
 
 
@@ -74,9 +76,10 @@ public class User {
         String username = snapshot.child("username").getValue(String.class);
         String password = snapshot.child("password").getValue(String.class);
         String email = snapshot.child("email").getValue(String.class);
+        String bio = snapshot.child("bio").getValue(String.class);
 
 
-        return new User(username,password, email);
+        return new User(username,password, email,bio);
     }
 
     public static void addToRoom(String username, String roomCode){
@@ -184,6 +187,13 @@ public class User {
         this.email = email;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 
     // Conversion methods -------------------------------------------------------------------------
     @Override
@@ -192,6 +202,7 @@ public class User {
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", bio='" + bio + '\'' +
                 '}';
     }
     @Override
@@ -213,6 +224,7 @@ public class User {
         result.put("username", username);
         result.put("password", password);
         result.put("email", email);
+        result.put("bio", bio);
         return result;
     }
 

@@ -16,7 +16,7 @@ import com.example.finalproject.R;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    TextView tvUsername, tvUsernameHeadline;
+    TextView tvUsername, tvUsernameHeadline, tvBio;
     ImageView ivUserIcon, ivBackIcon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +35,11 @@ public class UserProfileActivity extends AppCompatActivity {
         tvUsername = findViewById(R.id.tvUsername);
         tvUsernameHeadline = findViewById(R.id.tvUsernameHeadline);
         ivUserIcon = findViewById(R.id.ivUserIcon);
+        tvBio = findViewById(R.id.tvUserBio);
 
         tvUsername.setText(user.getUsername());
         tvUsernameHeadline.setText(user.getUsername());
+        tvBio.setText(user.getBio());
         //ivUserIcon.setImageResource(user.getPic()); TODO
 
         ivBackIcon = findViewById(R.id.ivBack);
