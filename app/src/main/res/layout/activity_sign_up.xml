@@ -9,6 +9,18 @@
     tools:context=".Activities.SignUpActivity"
     android:id="@+id/motion_layout_login">
 
+    <TextView
+        android:id="@+id/tvNearby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEARBY\n             ARCADE"
+        android:textColor="@color/action"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@id/etUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="wrap_content"
