@@ -134,7 +134,7 @@ public class ConnectFourActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
         Log.d(TAG, "Endpoint discovered: " + endpoint.getName());
-        if(getConnectedEndpoints().size() < 1)
+        if(getDiscoveredEndpoints().size() == 1)
             connectToEndpoint(endpoint);
     }
 
@@ -173,28 +173,11 @@ public class ConnectFourActivity extends ConnectionsActivity {
         String symbol = parts[2];
         isXTurn = !symbol.equals("X");
         board[row][col] = symbol;
-        buttons[row][col].setImageResource(isXTurn ? R.drawable.xo_o : R.drawable.xo_x);
+        buttons[row][col].setImageResource(isXTurn ? R.drawable.white : R.drawable.black);
         buttons[row][col].setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         buttons[row][col].setAdjustViewBounds(true);
-        if (checkWin(row, col)) {
-            Toast.makeText(this, symbol + " wins!", Toast.LENGTH_SHORT).show();
-            logText(symbol + " wins!");
-            lockBoard();
-            if(symbol.equals("X"))
-            {
-                int score = Integer.parseInt(tvScoreBlack.getText().toString());
-                score++;
-                tvScoreBlack.setText("" + score);
-            }
-            else{
-                int score = Integer.parseInt(tvScoreWhite.getText().toString());
-                score++;
-                tvScoreWhite.setText("" + score);
-            }
-        } else if (isBoardFull()) {
-            Toast.makeText(this, "It's a draw!", Toast.LENGTH_SHORT).show();
-            logText("It's a draw!");
-        }
+
+        winningLogic(row,col,symbol);
         isMyTurn = true;
     }
 
@@ -231,27 +214,12 @@ public class ConnectFourActivity extends ConnectionsActivity {
         if (emptyRow != -1) {
             String symbol = isXTurn ? "X" : "O";
             board[emptyRow][col] = symbol;
-            buttons[emptyRow][col].setImageResource(isXTurn ? R.drawable.xo_x : R.drawable.xo_o);
+            buttons[emptyRow][col].setImageResource(isXTurn ? R.drawable.black : R.drawable.white);
             buttons[emptyRow][col].setScaleType(ImageView.ScaleType.CENTER_INSIDE);
             buttons[emptyRow][col].setAdjustViewBounds(true);
-            if (checkWin(emptyRow, col)) {
-                Toast.makeText(this, symbol + " wins!", Toast.LENGTH_SHORT).show();
-                logText(symbol + " wins!");
-                lockBoard();
-                if(symbol.equals("X"))
-                {
-                    int score = Integer.parseInt(tvScoreBlack.getText().toString());
-                    score++;
-                    tvScoreBlack.setText("" + score);
-                }
-                else{
-                    int score = Integer.parseInt(tvScoreWhite.getText().toString());
-                    score++;
-                    tvScoreWhite.setText("" + score);
-                }
-            } else if (isBoardFull()) {
-                Toast.makeText(this, "It's a draw!", Toast.LENGTH_SHORT).show();
-            }
+
+            winningLogic(emptyRow,col,symbol);
+
             isXTurn = !isXTurn;
             isMyTurn = !isMyTurn;
             sendMoveToOpponent(emptyRow, col,symbol);
@@ -267,6 +235,30 @@ public class ConnectFourActivity extends ConnectionsActivity {
         }
         return -1;
     }
+    private void winningLogic(int emptyRow, int col, String symbol)
+    {
+        if (checkWin(emptyRow, col)) {
+            String winner = (symbol.equals("X") ? "Black" : "White");
+            Toast.makeText(this, winner + " wins!", Toast.LENGTH_SHORT).show();
+            logText(winner + " wins!");
+            lockBoard();
+            if(symbol.equals("X"))
+            {
+                int score = Integer.parseInt(tvScoreBlack.getText().toString());
+                score++;
+                tvScoreBlack.setText("" + score);
+            }
+            else{
+                int score = Integer.parseInt(tvScoreWhite.getText().toString());
+                score++;
+                tvScoreWhite.setText("" + score);
+            }
+        } else if (isBoardFull()) {
+            Toast.makeText(this, "It's a draw!", Toast.LENGTH_SHORT).show();
+            logText("It's a draw!");
+        }
+    }
+
 
     private boolean checkWin(int row, int col) {
         String player = board[row][col];

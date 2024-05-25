@@ -171,7 +171,7 @@ public class TicTacToeActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
         Log.d(TAG, "Discovered endpoint: " + endpoint.getName());
-        if(getConnectedEndpoints().size() < 1)
+        if(getDiscoveredEndpoints().size() == 1)
             connectToEndpoint(endpoint);
     }
 
