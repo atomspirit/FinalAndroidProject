@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.finalproject.Activities.ConnectFourActivity;
 import com.example.finalproject.Activities.RockPaperScissorsActivity;
 import com.example.finalproject.Activities.TicTacToeActivity;
 import com.example.finalproject.R;
@@ -41,6 +42,13 @@ public class ArcadeFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), TicTacToeActivity.class));
+            }
+        });
+        CardView btConnectFour = rootView.findViewById(R.id.btConnectFour);
+        btConnectFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), ConnectFourActivity.class));
             }
         });
 

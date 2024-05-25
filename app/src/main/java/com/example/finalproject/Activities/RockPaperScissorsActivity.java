@@ -33,7 +33,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     private boolean isMyTurn = false;
     private String myChoice;
     private String opponentChoice;
-    private TextView tvScore, tvLog;
+    private TextView tvScoreSelf, tvScoreOpp, tvLog, tvNameSelf, tvNameOpp;
     LinearLayout gameLayout;
 
 
@@ -78,7 +78,11 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
         });
 
         // -------------- Turn based logic --------------
-        tvScore = findViewById(R.id.tvScore);
+        tvScoreSelf = findViewById(R.id.tvScoreSelf);
+        tvScoreOpp = findViewById(R.id.tvScoreOpp);
+        tvNameSelf = findViewById(R.id.tvNameSelf);
+        tvNameSelf.setText(username + ":");
+        tvNameOpp = findViewById(R.id.tvNameOpp);
         tvLog = findViewById(R.id.tvLog);
         gameLayout = findViewById(R.id.gameLayout);
         gameLayout.setVisibility(View.GONE);
@@ -154,13 +158,14 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
         Log.d(TAG, "Discovered endpoint: " + endpoint.getName());
-        connectToEndpoint(endpoint);
+        if(getDiscoveredEndpoints().size() < 1)
+            connectToEndpoint(endpoint);
     }
 
     @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
         Log.d(TAG, "Connection initiated with endpoint: " + endpoint.getName());
-        if(!username.equals(endpoint.getName()))
+        if(!username.equals(endpoint.getName()) && getConnectedEndpoints().size() < 1)
             acceptConnection(endpoint);
     }
 
@@ -173,6 +178,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Log.d(TAG, "Disconnected from endpoint: " + endpoint.getName());
+        logText("Disconnected");
     }
 
     @Override
@@ -227,11 +233,14 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
                     (myChoice.equals(CHOICE_2) && opponentChoice.equals(CHOICE_1)) ||
                     (myChoice.equals(CHOICE_3) && opponentChoice.equals(CHOICE_2))) {
                 result = "You win!";
-                int score = Integer.parseInt(tvScore.getText().toString());
+                int score = Integer.parseInt(tvScoreSelf.getText().toString());
                 score++;
-                tvScore.setText("" + score);
+                tvScoreSelf.setText("" + score);
             } else {
                 result = "You lose!";
+                int score = Integer.parseInt(tvScoreOpp.getText().toString());
+                score++;
+                tvScoreOpp.setText("" + score);
             }
             logText(result);
             //Toast.makeText(this, result, Toast.LENGTH_LONG).show();
@@ -259,6 +268,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
 
     private void startGame(Endpoint opponent)
     {
+        tvNameOpp.setText(":" + opponent.getName());
         isMyTurn = isAdvertising();
         logText("Game started. Opponent: " + opponent.getName());
         discoveringButton.setVisibility(View.GONE);

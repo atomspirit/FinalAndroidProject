@@ -25,6 +25,9 @@
         android:theme="@style/Base.Theme.FinalProject"
         tools:targetApi="34">
         <activity
+            android:name=".Activities.ConnectFourActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.TicTacToeActivity"
             android:exported="false" />
         <activity

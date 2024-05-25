@@ -3,7 +3,9 @@ package com.example.finalproject.Activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -36,6 +38,10 @@ public class TicTacToeActivity extends ConnectionsActivity {
     private TextView tvScoreX,tvScoreO, tvLog;
     LinearLayout gameLayout;
     private boolean isXTurn = true; // Track whose turn it is
+
+
+    private static final String RESET_KEY_WORD = "reset";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,7 @@ public class TicTacToeActivity extends ConnectionsActivity {
                             isMyTurn = false;
                             isXTurn = !isXTurn;
                             checkForWin();
+                            return;
                         }
                         if (!isMyTurn)
                         {
@@ -116,6 +123,12 @@ public class TicTacToeActivity extends ConnectionsActivity {
             @Override
             public void onClick(View v) {
                 endGame();
+            }
+        });
+        findViewById(R.id.btResetGame).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetBoard(true);
             }
         });
     }
@@ -158,7 +171,8 @@ public class TicTacToeActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
         Log.d(TAG, "Discovered endpoint: " + endpoint.getName());
-        connectToEndpoint(endpoint);
+        if(getConnectedEndpoints().size() < 1)
+            connectToEndpoint(endpoint);
     }
 
     @Override
@@ -177,12 +191,20 @@ public class TicTacToeActivity extends ConnectionsActivity {
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Log.d(TAG, "Disconnected from endpoint: " + endpoint.getName());
+        logText("Disconnected");
     }
 
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
         String receivedMessage = new String(payload.asBytes(), StandardCharsets.UTF_8);
         Log.d(TAG, "Received payload from endpoint: " + endpoint.getName() + " msg: " + receivedMessage);
+
+        if(receivedMessage.equals(RESET_KEY_WORD))
+        {
+            resetBoard(false);
+            return;
+        }
+
         String[] parts = receivedMessage.split(",");
         int i = Integer.parseInt(parts[0]);
         int j = Integer.parseInt(parts[1]);
@@ -222,7 +244,7 @@ public class TicTacToeActivity extends ConnectionsActivity {
                 score++;
                 tvScoreO.setText("" + score);
             }
-            resetBoard();
+            lockBoard();
         }
     }
 
@@ -244,35 +266,36 @@ public class TicTacToeActivity extends ConnectionsActivity {
             return board[0][2];
         }
 
-        if(isBoardFull())
-            resetBoard();
-
         return null;
     }
-    private boolean isBoardFull()
+    private boolean lockBoard()
     {
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 3; j++)
             {
-                if (board[i][j] == null) {
-                    return false;
-                }
+                buttons[i][j].setEnabled(false);
             }
         }
         return true;
     }
 
 
-    private void resetBoard() {
+    private void resetBoard(boolean isInitiated) {
         board = new String[3][3];
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 buttons[i][j].setImageResource(R.drawable.xo_blank);
+                buttons[i][j].setEnabled(true);
             }
         }
         isMyTurn = isAdvertising();
         isXTurn = true; // Reset to X's turn
+
+        if (isInitiated){
+            Payload payload = Payload.fromBytes(RESET_KEY_WORD.getBytes(StandardCharsets.UTF_8));
+            send(payload);
+        }
     }
 
     private void logText(String text) {

@@ -192,10 +192,26 @@
                 android:layout_columnWeight="1"
                 android:layout_rowWeight="1"/>
         </GridLayout>
-        <Button
-            android:id="@+id/btEndGame"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="End Game" />
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btEndGame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="End Game"
+                android:layout_weight="1"
+                android:layout_marginEnd="5dp"/>
+            <Button
+                android:id="@+id/btResetGame"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Play Again"
+                android:layout_weight="1"
+                android:layout_marginStart="5dp"/>
+
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>
