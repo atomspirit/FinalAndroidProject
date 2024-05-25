@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -70,7 +71,15 @@ public class Utilities {
         }
         return validateEditText(etEmail, "Email is required");
     }
-
+    public boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null) {
+            // Check if GPS provider or network provider is enabled
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }
+        return false;
+    }
 
 
 }

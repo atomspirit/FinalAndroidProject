@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.nearby.connection.Payload;
@@ -48,6 +49,10 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
         roomCode = getApplicationContext().getSharedPreferences("shared_pref",
                 Context.MODE_PRIVATE).getString("current_room", "");
 
+        Utilities utils = new Utilities(getApplicationContext());
+        if(!utils.isLocationEnabled())
+            Toast.makeText(getApplicationContext(),"Make sure your location is turned on",
+                    Toast.LENGTH_LONG).show();
 
         advertisingButton = findViewById(R.id.switch_advertising);
         advertisingButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -143,6 +148,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     @Override
     protected void onAdvertisingFailed() {
         Log.d(TAG, "Advertising failed to start.");
+        Toast.makeText(getApplicationContext(),"something went wrong. Try again", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -153,6 +159,7 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
     @Override
     protected void onDiscoveryFailed() {
         Log.d(TAG, "Discovery failed to start.");
+        Toast.makeText(getApplicationContext(),"something went wrong. Try again", Toast.LENGTH_LONG).show();
     }
 
     @Override
