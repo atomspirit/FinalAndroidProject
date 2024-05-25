@@ -21,7 +21,7 @@ import java.util.Set;
 
 public class Room {
     // Fields -------------------------------------------------------------------------------------
-    private String code, name, description;
+    private String code, name, description, URL;
     private ArrayList<User> participants;
     private User host;
 
@@ -29,20 +29,22 @@ public class Room {
 
 
     // Constructors -------------------------------------------------------------------------------
-    public Room(String name, String code, User host, String description) {
+    public Room(String name, String code, User host, String description,String URL) {
         this.code = code;
         this.name = name;
         this.participants = new ArrayList<>();
         addParticipant(host);
         this.host = host;
         this.description = description;
+        this.URL = URL;
     }
-    public Room(String name, String code, User host,String description, ArrayList<User> participants) {
+    public Room(String name, String code, User host,String description, ArrayList<User> participants, String URL) {
         this.code = code;
         this.name = name;
         this.participants = participants;
         this.host = host;
         this.description = description;
+        this.URL = URL;
     }
 
     // Getters and setters ------------------------------------------------------------------------
@@ -84,6 +86,14 @@ public class Room {
 
     public void setHost(User host) {
         this.host = host;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
     }
 
     // Methods ------------------------------------------------------------------------------------
@@ -200,6 +210,7 @@ public class Room {
         String name = snapshot.child("name").getValue(String.class);
         String description = snapshot.child("description").getValue(String.class);
         User host = User.fromSnapshot(snapshot.child("host"));
+        String URL = snapshot.child("url").getValue(String.class);;
         ArrayList<User> participants = new ArrayList<>();
 
         for (DataSnapshot child : snapshot.child("participants").getChildren()) {
@@ -207,7 +218,7 @@ public class Room {
         }
 
 
-        Room room = new Room(name,code, host,description,participants);
+        Room room = new Room(name,code, host,description,participants,URL);
 
         return room;
     }
@@ -221,6 +232,7 @@ public class Room {
                 ", name='" + name + '\'' +
                 ", participants=" + participants +
                 ", host=" + host +
+                ", url=" + getURL() +
                 '}';
     }
 
@@ -231,6 +243,7 @@ public class Room {
         result.put("participants", participants);
         result.put("host", host.toMap());
         result.put("description", description);
+        result.put("url", getURL());
         return result;
     }
 

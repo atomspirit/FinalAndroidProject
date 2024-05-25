@@ -17,14 +17,17 @@ import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.Activities.SignInActivity;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.R;
+import com.google.android.material.imageview.ShapeableImageView;
 
 public class ProfileFragment extends Fragment {
 
     TextView tvSignOut, tvUserEmail, tvUserPassword, tvUsername, tvBio;
+    ShapeableImageView ivPicture;
 
 
     public ProfileFragment() {
@@ -46,6 +49,7 @@ public class ProfileFragment extends Fragment {
         tvUserEmail = view.findViewById(R.id.tvUserEmail);
         tvUserPassword = view.findViewById(R.id.tvUserPassword);
         tvBio = view.findViewById(R.id.tvUserBio);
+        ivPicture = view.findViewById(R.id.ivUserIcon);
         tvSignOut = view.findViewById(R.id.tvSignOut);
         tvSignOut.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -75,6 +79,12 @@ public class ProfileFragment extends Fragment {
                 tvUserPassword.setText("password: " + user.getPassword());
                 tvUsername.setText(user.getUsername());
                 tvBio.setText(user.getBio());
+
+                // Load the image from the URL using Glide
+                Glide.with(ProfileFragment.this)
+                        .load(user.getURL())
+                        .placeholder(R.drawable.ic_default_user)
+                        .into(ivPicture);
             }
         });
     }

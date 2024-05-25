@@ -1,18 +1,21 @@
 package com.example.finalproject.Activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,13 +25,20 @@ import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
-import com.google.firebase.FirebaseApp;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -37,7 +47,9 @@ public class SignUpActivity extends AppCompatActivity {
     MotionLayout motionLayout;
     Button btSignUp;
     DatabaseReference databaseReference;
-
+    ShapeableImageView ivProfilePicture;
+    String userImageURL;
+    Uri userImageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
     private void initComponents()
     {
+        //userImageUri = getResources(R.drawable.game_item_bg_01)
         etPassword = findViewById(R.id.etPassword);
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
@@ -103,10 +116,36 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Utilities.hideKeyboard(getApplicationContext(), getCurrentFocus());
                 if(Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword)
-                        && Utilities.validateEmail(etEmail) && Utilities.validateEditText(etBio, "Bio is required"))
-                    signUp();
+                        && Utilities.validateEmail(etEmail) && Utilities.validateEditText(etBio, "Bio is required")) {
+
+                    if(userImageUri == null)
+                    {
+                        int imageResource = getApplicationContext().getResources().getIdentifier("@drawable/ic_default_user", null, getPackageName());
+
+                        userImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + imageResource);
+                    }
+                    FirebaseManager.uploadImageToFirebase(userImageUri, new OnSuccessListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            userImageURL = s;
+                            signUp();
+                        }
+                    });
+                }
             }
         });
+
+        Button btAddPic = findViewById(R.id.btAddPic);
+        btAddPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select A Photo"),321);
+            }
+        });
+        ivProfilePicture = findViewById(R.id.ivUserIcon);
 
     }
 
@@ -122,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String bio = etBio.getText().toString().trim();
 
-        User user = new User(username,password,email,bio);
+        User user = new User(username,password,email,bio,userImageURL);
 
         Query query = databaseReference.orderByChild("username").equalTo(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,4 +191,17 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 321 && resultCode == RESULT_OK && data != null)
+        {
+            userImageUri = data.getData();
+            if(userImageUri != null)
+            {
+                ivProfilePicture.setImageURI(userImageUri);
+                ivProfilePicture.setBackground(null);
+            }
+        }
+    }
 }

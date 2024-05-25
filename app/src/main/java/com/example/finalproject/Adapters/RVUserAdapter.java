@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
@@ -44,7 +45,11 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
         // based on the position of the recycler view
 
         holder.tvUserName.setText(users.get(position).getUsername());
-        holder.ivPlayerIcon.setImageResource(R.drawable.game_item_bg_01); // TODO: change default image
+        // Load the image from the URL using Glide
+        Glide.with(context) //problem here
+                .load(users.get(position).getURL())
+                .placeholder(R.drawable.ic_default_user)
+                .into(holder.ivPlayerIcon);
     }
 
     @Override

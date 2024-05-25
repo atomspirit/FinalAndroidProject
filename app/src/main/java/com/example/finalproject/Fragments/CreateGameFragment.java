@@ -1,11 +1,14 @@
 package com.example.finalproject.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Domains.FirebaseManager;
@@ -22,6 +26,8 @@ import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.Interfaces.FragmentInteractionListener;
 import com.example.finalproject.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +40,10 @@ public class CreateGameFragment extends Fragment  {
     EditText etCode, etName, etDesc;
     Button btCreate;
     DatabaseReference databaseReference;
+    String roomImageURL;
+    Uri roomImageUri;
     private FragmentInteractionListener fragmentInteractionListener;
+    ShapeableImageView ivRoomPic;
 
 
     public CreateGameFragment() {
@@ -48,6 +57,7 @@ public class CreateGameFragment extends Fragment  {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_create_game, container, false);
 
+        ivRoomPic = v.findViewById(R.id.ivRoomIcon);
         etCode = v.findViewById(R.id.etCode);
         etName = v.findViewById(R.id.etName);
         etDesc = v.findViewById(R.id.etDesc);
@@ -59,10 +69,34 @@ public class CreateGameFragment extends Fragment  {
                         (Utilities.validateEditText(etCode, "Room description is required"))
                         && Utilities.validateEditText(etCode, "Room code is required")){
                     Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
-                    addRoom();
+
+                    if(roomImageUri == null)
+                    {
+                        int imageResource = getActivity().getResources().getIdentifier("@drawable/ic_default_room", null, getActivity().getPackageName());
+
+                        roomImageUri = Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + imageResource);
+                    }
+                    FirebaseManager.uploadImageToFirebase(roomImageUri, new OnSuccessListener<String>() {
+                        @Override
+                        public void onSuccess(String s) {
+                            roomImageURL = s;
+                            addRoom();
+                        }
+                    });
+
                     if(fragmentInteractionListener != null)
                         fragmentInteractionListener.onButtonClicked();
                 }
+            }
+        });
+        Button btAddPicture = v.findViewById(R.id.btAddPic);
+        btAddPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,"Select A Photo"),321);
             }
         });
 
@@ -82,7 +116,7 @@ public class CreateGameFragment extends Fragment  {
         User.getCurrentUser(getActivity(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
-                Room room = new Room(roomName, roomCode, user, roomDesc);
+                Room room = new Room(roomName, roomCode, user, roomDesc,roomImageURL);
                 compareRoom(room);
             }
         });
@@ -135,4 +169,20 @@ public class CreateGameFragment extends Fragment  {
     public void setFragmentInteractionListener(FragmentInteractionListener fragmentInteractionListener) {
         this.fragmentInteractionListener = fragmentInteractionListener;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 321 && resultCode == Activity.RESULT_OK && data != null)
+        {
+            roomImageUri = data.getData();
+            if(roomImageUri != null)
+            {
+                ivRoomPic.setImageURI(roomImageUri);
+                ivRoomPic.setBackground(null);
+            }
+        }
+    }
+
+
 }

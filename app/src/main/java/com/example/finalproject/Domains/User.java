@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,14 +31,16 @@ public class User {
     private String password;
     private String email;
     private String bio;
+    private String URL;
 
 
     // Constructors -------------------------------------------------------------------------------
-    public User(String username, String password, String email, String bio) {
+    public User(String username, String password, String email, String bio, String URL) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.bio = bio;
+        this.URL = URL;
     }
 
 
@@ -77,9 +80,9 @@ public class User {
         String password = snapshot.child("password").getValue(String.class);
         String email = snapshot.child("email").getValue(String.class);
         String bio = snapshot.child("bio").getValue(String.class);
+        String URL = snapshot.child("url").getValue(String.class);
 
-
-        return new User(username,password, email,bio);
+        return new User(username,password, email,bio,URL);
     }
 
     public static void addToRoom(String username, String roomCode){
@@ -195,6 +198,14 @@ public class User {
         this.bio = bio;
     }
 
+    public String getURL() {
+        return URL;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
     // Conversion methods -------------------------------------------------------------------------
     @Override
     public String toString() {
@@ -203,6 +214,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", bio='" + bio + '\'' +
+                ", url='" + URL + '\'' +
                 '}';
     }
     @Override
@@ -225,6 +237,7 @@ public class User {
         result.put("password", password);
         result.put("email", email);
         result.put("bio", bio);
+        result.put("url",URL);
         return result;
     }
 

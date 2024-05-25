@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.R;
@@ -40,7 +41,10 @@ public class UserProfileActivity extends AppCompatActivity {
         tvUsername.setText(user.getUsername());
         tvUsernameHeadline.setText(user.getUsername());
         tvBio.setText(user.getBio());
-        //ivUserIcon.setImageResource(user.getPic()); TODO
+        Glide.with(getApplicationContext()) //problem here
+                .load(user.getURL())
+                .placeholder(R.drawable.ic_default_user)
+                .into(ivUserIcon);
 
         ivBackIcon = findViewById(R.id.ivBack);
         ivBackIcon.setOnTouchListener(new View.OnTouchListener() {

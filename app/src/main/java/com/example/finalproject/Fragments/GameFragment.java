@@ -24,7 +24,6 @@ import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Adapters.RVRoomAdapter;
 import com.example.finalproject.Adapters.RVUserAdapter;
 import com.example.finalproject.Adapters.VPAdapterForFragment;
-import com.example.finalproject.Adapters.MyGameAdapter;
 import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;

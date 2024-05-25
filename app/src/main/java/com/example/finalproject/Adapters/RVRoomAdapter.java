@@ -9,8 +9,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
+import com.example.finalproject.Fragments.ProfileFragment;
 import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -43,7 +45,11 @@ public class RVRoomAdapter extends RecyclerView.Adapter<RVRoomAdapter.RoomAdapte
         // based on the position of the recycler view
 
         holder.tvRoomName.setText(rooms.get(position).getName());
-        holder.ivRoomIcon.setImageResource(R.drawable.game_item_bg_01); // TODO: change default image
+        // Load the image from the URL using Glide
+        Glide.with(context) //problem here
+                .load(rooms.get(position).getURL())
+                .placeholder(R.drawable.ic_default_room)
+                .into(holder.ivRoomIcon);
         holder.tvRoomDescription.setText(rooms.get(position).getDescription());
     }
 
@@ -65,6 +71,8 @@ public class RVRoomAdapter extends RecyclerView.Adapter<RVRoomAdapter.RoomAdapte
             ivRoomIcon = itemView.findViewById(R.id.ivGameIcon);
             tvRoomName = itemView.findViewById(R.id.tvName);
             tvRoomDescription = itemView.findViewById(R.id.tvDescription);
+
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
