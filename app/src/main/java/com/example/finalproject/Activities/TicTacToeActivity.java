@@ -1,11 +1,8 @@
 package com.example.finalproject.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +10,6 @@ import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -278,7 +274,7 @@ public class TicTacToeActivity extends ConnectionsActivity {
 
         return null;
     }
-    private boolean lockBoard()
+    private void lockBoard()
     {
         for(int i = 0; i < 3; i++)
         {
@@ -287,7 +283,6 @@ public class TicTacToeActivity extends ConnectionsActivity {
                 buttons[i][j].setEnabled(false);
             }
         }
-        return true;
     }
 
 

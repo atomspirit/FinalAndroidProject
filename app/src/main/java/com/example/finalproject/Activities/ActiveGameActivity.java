@@ -105,20 +105,4 @@ public class ActiveGameActivity extends AppCompatActivity {
         }).attach();
     }
 
-    // NFC ----------------------------------------------------------------------------------------
-
-    private ArcadeFragment getNFCFragmentIfActive()
-    {
-        // Get the currently selected fragment
-        int selectedTabIndex = tabLayout.getSelectedTabPosition();
-
-        Fragment selectedFragment = getSupportFragmentManager().findFragmentByTag("f" + selectedTabIndex);
-
-        // Forward the NFC intent to the selected fragment
-        if (selectedFragment instanceof ArcadeFragment) {
-            return (ArcadeFragment) selectedFragment;
-        }
-        return null;
-    }
-
 }

@@ -25,9 +25,6 @@ public class Room {
     private ArrayList<User> participants;
     private User host;
 
-    private static final String DEFAULT_DESCRIPTION = "default description";
-
-
     // Constructors -------------------------------------------------------------------------------
     public Room(String name, String code, User host, String description,String URL) {
         this.code = code;
@@ -101,9 +98,8 @@ public class Room {
         participants.add(user);
     }
 
-    public void updateParticipants(Context context){
-        String current_room = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_room", "");
-
+    public void updateParticipants(){
+        String current_room = getCode();
         DatabaseReference reference = FirebaseManager.getReference("rooms");
 
 
@@ -130,24 +126,10 @@ public class Room {
     static public void getCurrentRoom(Context context, RoomCallback callback) {
         String current_room = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_room", "");
 
-        DatabaseReference reference = FirebaseManager.getReference("rooms");
-
-
-        Query query=reference.orderByChild("code").equalTo(current_room);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-
+        createRoomFromCode(current_room, new RoomCallback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    Room room = Room.fromSnapshot(snapshot.child(current_room));
-                    Log.d("TAG", "received room: " + room);
-                    callback.onRoomReceived(room);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onRoomReceived(null);
+            public void onRoomReceived(Room room) {
+                callback.onRoomReceived(room);
             }
         });
     }
@@ -174,9 +156,7 @@ public class Room {
             }
         });
     }
-    public void leave(Context context, User user){
-        // TODO: if the user is the host delete the game and add an alertDialog
-
+    public void leave(User user){
 
         // Remove this room from user->rooms
         user.removeRoom(this);
@@ -185,7 +165,7 @@ public class Room {
         // Remove this user from room->participants
 
         participants.remove(user);
-        updateParticipants(context);
+        updateParticipants();
 
         if(participants.isEmpty())
             delete();

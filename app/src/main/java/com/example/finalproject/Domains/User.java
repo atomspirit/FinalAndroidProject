@@ -47,29 +47,10 @@ public class User {
     // Methods ------------------------------------------------------------------------------------
     static public void getCurrentUser(Context context, UserCallback callback){
         String current_username = context.getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_username", "");
-        DatabaseReference reference = FirebaseManager.getReference("users");
-        if(reference == null){
-            callback.onUserReceived(null);
-            return;
-        }
-
-        Query query = reference.orderByChild("username").equalTo(current_username);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-
+        createUserFromUsername(current_username, new UserCallback() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    User user = User.fromSnapshot(snapshot.child(current_username));
-                    Log.d("TAG", "received user: " + user);
-                    callback.onUserReceived(user);
-                } else {
-                    callback.onUserReceived(null);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onUserReceived(null);
+            public void onUserReceived(User user) {
+                callback.onUserReceived(user);
             }
         });
     }
@@ -142,7 +123,10 @@ public class User {
     }
     public static void createUserFromUsername(String username, UserCallback callback) {
         DatabaseReference reference = FirebaseManager.getReference("users");
-        if (reference == null) return;
+        if(reference == null){
+            callback.onUserReceived(null);
+            return;
+        }
 
         Query query=reference.orderByChild("username").equalTo(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {

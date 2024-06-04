@@ -14,7 +14,7 @@ import com.example.finalproject.Fragments.JoinGameFragment;
 
 import java.util.ArrayList;
 
-/**
+/**C
  * View Pager Adapter
  */
 public class VPAdapter extends FragmentStateAdapter {

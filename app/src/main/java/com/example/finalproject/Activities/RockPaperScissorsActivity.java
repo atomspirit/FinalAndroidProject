@@ -190,12 +190,6 @@ public class RockPaperScissorsActivity extends ConnectionsActivity {
 
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
-
-        //String receivedMessage = new String(payload.asBytes(), StandardCharsets.UTF_8);
-        //Log.d(TAG, "Received payload from endpoint: " + endpoint.getName() + " msg: " + receivedMessage);
-        //Toast.makeText(getApplicationContext(),"msg: " + receivedMessage,Toast.LENGTH_LONG).show();
-        //Room.setCatcher(roomCode,username);
-
         String receivedChoice = new String(payload.asBytes(), StandardCharsets.UTF_8);
         logD("Received payload from endpoint: " + endpoint.getName() + " choice: " + receivedChoice);
         logText(endpoint.getName() + " played a move. ");

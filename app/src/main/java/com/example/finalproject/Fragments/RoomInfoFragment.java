@@ -129,7 +129,7 @@ public class RoomInfoFragment extends Fragment {
             @Override
             public void onUserReceived(User user) {
 
-                mRoom.leave(getContext(), user);
+                mRoom.leave(user);
 
                 getActivity().finish();
 

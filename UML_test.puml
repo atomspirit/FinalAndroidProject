@@ -1,0 +1,489 @@
+@startuml
+abstract class FirebaseManager {
+- {static} String URL
+- {static} String TAG
++ {static} DatabaseReference getReference(String)
++ {static} void uploadImageToFirebase(Uri,OnSuccessListener<String>)
+}
+
+
+class SignInActivity {
+~ EditText etUsername
+~ TextView tvMoveToSignUp
+~ MotionLayout motionLayout
+~ Button btSignIn
+# void onCreate(Bundle)
+- void initComponents()
+- void checkIfUserAlreadySignedIn()
++ void checkUser()
+}
+
+
+interface User$UserCallback {
+~ void onUserReceived(User)
+}
+
+class SignUpActivity {
+~ EditText etUsername
+~ TextView tvMoveToSignIn
+~ MotionLayout motionLayout
+~ Button btSignUp
+~ DatabaseReference databaseReference
+~ ShapeableImageView ivProfilePicture
+~ String userImageURL
+~ Uri userImageUri
+# void onCreate(Bundle)
+- void initComponents()
+- void signUp()
+# void onActivityResult(int,int,Intent)
+}
+
+
+class RVRoomAdapter {
+~ Context context
+~ ArrayList<Room> rooms
+~ RVInterface rvInterface
++ RVRoomAdapter.RoomAdapterViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(RVRoomAdapter.RoomAdapterViewHolder,int)
++ int getItemCount()
+}
+
+
+class RVRoomAdapter$RoomAdapterViewHolder {
+~ ShapeableImageView ivRoomIcon
+~ TextView tvRoomName
+}
+
+abstract class ConnectionsActivity {
+~ {static} String TAG
+- {static} String[] REQUIRED_PERMISSIONS
+- {static} int REQUEST_CODE_REQUIRED_PERMISSIONS
+- ConnectionsClient mConnectionsClient
+- Map<String,Endpoint> mDiscoveredEndpoints
+- Map<String,Endpoint> mPendingConnections
+- Map<String,Endpoint> mEstablishedConnections
+- boolean mIsConnecting
+- boolean mIsDiscovering
+- boolean mIsAdvertising
+- ConnectionLifecycleCallback mConnectionLifecycleCallback
+- PayloadCallback mPayloadCallback
+# void onCreate(Bundle)
+# void onStart()
++ void onRequestPermissionsResult(int,String[],int[])
+# void startAdvertising()
+# void stopAdvertising()
+# boolean isAdvertising()
+# void onAdvertisingStarted()
+# void onAdvertisingFailed()
+# void onConnectionInitiated(Endpoint,ConnectionInfo)
+# void acceptConnection(Endpoint)
+# void rejectConnection(Endpoint)
+# void startDiscovering()
+# void stopDiscovering()
+# boolean isDiscovering()
+# void onDiscoveryStarted()
+# void onDiscoveryFailed()
+# void onEndpointDiscovered(Endpoint)
+# void disconnect(Endpoint)
+# void disconnectFromAllEndpoints()
+# void stopAllEndpoints()
+# void connectToEndpoint(Endpoint)
+# boolean isConnecting()
+- void connectedToEndpoint(Endpoint)
+- void disconnectedFromEndpoint(Endpoint)
+# void onConnectionFailed(Endpoint)
+# void onEndpointConnected(Endpoint)
+# void onEndpointDisconnected(Endpoint)
+# Set<Endpoint> getDiscoveredEndpoints()
+# Set<Endpoint> getConnectedEndpoints()
+# void send(Payload)
+- void send(Payload,Set<String>)
+# void onReceive(Endpoint,Payload)
+# String[] getRequiredPermissions()
+# {abstract}String getName()
+# {abstract}String getServiceId()
+# {abstract}Strategy getStrategy()
+- {static} String toString(Status)
++ {static} boolean hasPermissions(Context,String)
+# void logV(String)
+# void logD(String)
+# void logW(String)
+# void logW(String,Throwable)
+# void logE(String,Throwable)
+}
+
+
+class ConnectionsActivity$Endpoint {
+- String id
+- String name
++ String getId()
++ String getName()
++ boolean equals(Object)
++ int hashCode()
++ String toString()
+}
+
+
+class RockPaperScissorsActivity {
+- String username
+- String roomCode
+~ SwitchCompat advertisingButton
+- {static} String CHOICE_1
+- {static} String CHOICE_2
+- {static} String CHOICE_3
+- boolean isMyTurn
+- String myChoice
+- String opponentChoice
+- TextView tvScoreSelf
+~ LinearLayout gameLayout
+# void onCreate(Bundle)
+# String getName()
+# String getServiceId()
+# Strategy getStrategy()
+# void onAdvertisingStarted()
+# void onAdvertisingFailed()
+# void onDiscoveryStarted()
+# void onDiscoveryFailed()
+# void onEndpointDiscovered(Endpoint)
+# void onConnectionInitiated(Endpoint,ConnectionInfo)
+# void onEndpointConnected(Endpoint)
+# void onEndpointDisconnected(Endpoint)
+# void onReceive(Endpoint,Payload)
+# void onConnectionFailed(Endpoint)
+- void makeChoice(String)
+- void sendPayloadToOpponent(String)
+- void determineWinner()
+- void logText(String)
+- void startGame(Endpoint)
+- void endGame()
+# void onDestroy()
+}
+
+
+interface FragmentInteractionListener {
+~ void onButtonClicked()
+}
+
+class ProfileFragment {
+~ TextView tvSignOut
+~ ShapeableImageView ivPicture
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void initComponents(View)
+- void showSignOutDialog()
+- void signOut()
+}
+
+
+class JoinGameFragment {
+~ EditText etCode
+~ Button btJoin
+- FragmentInteractionListener fragmentInteractionListener
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
++ void checkRoom()
++ void setFragmentInteractionListener(FragmentInteractionListener)
+}
+
+
+class GameFragment {
+~ ImageView ivAddGame
+~ TextView tvEmptyRooms
+~ RecyclerView recyclerView
+~ ArrayList<Room> games
+~ Dialog createJoinGame
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void initComponent(View)
++ void addGame(Room)
++ void clearGames()
+- void setupAdapterWithRecyclerView()
+- void showPopup()
+- void loadRooms(DataSnapshot)
++ void onItemClicked(int)
+}
+
+
+class CreateGameFragment {
+~ EditText etCode
+~ Button btCreate
+~ DatabaseReference databaseReference
+~ String roomImageURL
+~ Uri roomImageUri
+- FragmentInteractionListener fragmentInteractionListener
+~ ShapeableImageView ivRoomPic
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void addRoom()
++ void compareRoom(Room)
++ void setFragmentInteractionListener(FragmentInteractionListener)
++ void onActivityResult(int,int,Intent)
+}
+
+
+class MainActivity {
+~ TabLayout tabLayout
+~ ViewPager2 viewPager
+# void onCreate(Bundle)
+}
+
+
+class RoomInfoFragment {
+~ TextView tvRoomCode
+~ Boolean isHost
+~ Room mRoom
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void showLeaveRoomDialog()
+- void leaveRoom()
+- void showDeleteRoomDialog()
+- void deleteRoom()
+}
+
+
+class UserProfileActivity {
+~ TextView tvUsername
+~ ImageView ivUserIcon
+# void onCreate(Bundle)
+- void initComponent(User)
+}
+
+
+class ActiveGameActivity {
+~ ImageView ivBack
+~ TextView tvGameTitle
+~ Room room
+~ ViewPager2 viewPager
+~ TabLayout tabLayout
+# void onCreate(Bundle)
+- void initComponent()
+- void setupTabLayout()
+}
+
+
+class VPAdapter {
+- ArrayList<Pair<Fragment,String>> fragmentsList
++ void addFragment(Fragment,String)
++ Fragment createFragment(int)
++ int getItemCount()
++ String getFragmentTitle(int)
+}
+
+class User {
+- String username
+- String password
+- String email
+- String bio
+- String URL
++ {static} void getCurrentUser(Context,UserCallback)
++ {static} User fromSnapshot(DataSnapshot)
++ {static} void addToRoom(String,String)
++ void removeRoom(Room)
++ {static} void createUserFromUsername(String,UserCallback)
++ String getUsername()
++ void setUsername(String)
++ String getPassword()
++ void setPassword(String)
++ String getEmail()
++ void setEmail(String)
++ String getBio()
++ void setBio(String)
++ String getURL()
++ void setURL(String)
++ String toString()
++ int hashCode()
++ boolean equals(Object)
++ Map<String,Object> toMap()
+}
+
+class Room {
+- String code
+- ArrayList<User> participants
+- User host
++ String getName()
++ void setName(String)
++ String getDescription()
++ void setDescription(String)
++ String getCode()
++ void setCode(String)
++ ArrayList<User> getParticipants()
++ void setParticipants(ArrayList<User>)
++ User getHost()
++ void setHost(User)
++ String getURL()
++ void setURL(String)
++ void addParticipant(User)
++ void updateParticipants()
++ boolean containsParticipant(User)
++ {static} void getCurrentRoom(Context,RoomCallback)
++ {static} void createRoomFromCode(String,RoomCallback)
++ void leave(User)
++ void delete()
++ {static} Room fromSnapshot(DataSnapshot)
++ String toString()
++ Map<String,Object> toMap()
+}
+
+
+interface Room$RoomCallback {
+~ void onRoomReceived(Room)
+}
+
+interface RVInterface {
+~ void onItemClicked(int)
+}
+
+class Utilities {
+- Context context
+- {static} String EMAIL_PATTERN
++ {static} void hideKeyboard(Context,View)
++ {static} Boolean validateEditText(EditText,String)
++ {static} Boolean validatePassword(EditText)
++ {static} Boolean validateUsername(EditText)
++ {static} Boolean validateEmail(EditText)
++ boolean isLocationEnabled()
+}
+
+
+class ConnectFourActivity {
+- String username
+- String roomCode
+~ SwitchCompat advertisingButton
+- {static} int ROWS
+- {static} int COLS
+- String[][] board
+- ImageButton[][] buttons
+- boolean isXTurn
+- boolean isMyTurn
+- TextView tvScoreBlack
+~ LinearLayout gameLayout
+- {static} String RESET_KEY_WORD
+# void onCreate(Bundle)
+# String getName()
+# String getServiceId()
+# Strategy getStrategy()
+# void onAdvertisingStarted()
+# void onAdvertisingFailed()
+# void onDiscoveryStarted()
+# void onDiscoveryFailed()
+# void onEndpointDiscovered(Endpoint)
+# void onEndpointConnected(Endpoint)
+# void onEndpointDisconnected(Endpoint)
+# void onConnectionInitiated(Endpoint,ConnectionInfo)
+# void onReceive(Endpoint,Payload)
+- void initializeGrid()
+- void onGridButtonClick(int,int)
+- int getEmptyRow(int)
+- void winningLogic(int,int,String)
+- boolean checkWin(int,int)
+- boolean checkDirection(int,int,int,int,String)
+- boolean isBoardFull()
+- void sendMoveToOpponent(int,int,String)
+- void logText(String)
+- void resetGame(boolean)
+- boolean lockBoard()
+- void startGame(Endpoint)
+- void endGame()
+# void onDestroy()
+}
+
+
+class TicTacToeActivity {
+- String username
+- String roomCode
+~ SwitchCompat advertisingButton
+- boolean isMyTurn
+- String[][] board
+- ImageButton[][] buttons
+- TextView tvScoreX
+~ LinearLayout gameLayout
+- boolean isXTurn
+- {static} String RESET_KEY_WORD
+# void onCreate(Bundle)
+# String getName()
+# String getServiceId()
+# Strategy getStrategy()
+# void onAdvertisingStarted()
+# void onAdvertisingFailed()
+# void onDiscoveryStarted()
+# void onDiscoveryFailed()
+# void onEndpointDiscovered(Endpoint)
+# void onConnectionInitiated(Endpoint,ConnectionInfo)
+# void onEndpointConnected(Endpoint)
+# void onEndpointDisconnected(Endpoint)
+# void onReceive(Endpoint,Payload)
+# void onConnectionFailed(Endpoint)
+- void sendPayloadToOpponent(int,int,String)
+- void checkForWin()
+- String getWinner()
+- void lockBoard()
+- void resetBoard(boolean)
+- void logText(String)
+- void startGame(Endpoint)
+- void endGame()
+# void onDestroy()
+}
+
+
+class ArcadeFragment {
+~ TextView tvHeadline
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+
+class ParticipantsListFragment {
+~ ArrayList<User> participants
+~ RecyclerView recyclerView
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+- void populateParticipantsArray()
+- void setupAdapterWithRecyclerView()
++ void onItemClicked(int)
+}
+
+
+class AboutFragment {
++ View onCreateView(LayoutInflater,ViewGroup,Bundle)
+}
+
+class RVUserAdapter {
+~ Context context
+~ ArrayList<User> users
+~ RVInterface rvInterface
++ RVUserAdapter.UserAdapterViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(RVUserAdapter.UserAdapterViewHolder,int)
++ int getItemCount()
+}
+
+
+class RVUserAdapter$UserAdapterViewHolder {
+~ ShapeableImageView ivPlayerIcon
+~ TextView tvUserName
+}
+
+
+
+AppCompatActivity <|-- SignInActivity
+User +.. User$UserCallback
+AppCompatActivity <|-- SignUpActivity
+Adapter <|-- RVRoomAdapter
+RVRoomAdapter +.. RVRoomAdapter$RoomAdapterViewHolder
+ViewHolder <|-- RVRoomAdapter$RoomAdapterViewHolder
+AppCompatActivity <|-- ConnectionsActivity
+ConnectionsActivity +.. ConnectionsActivity$Endpoint
+ConnectionsActivity <|-- RockPaperScissorsActivity
+Fragment <|-- ProfileFragment
+Fragment <|-- JoinGameFragment
+RVInterface <|.. GameFragment
+Fragment <|-- GameFragment
+Fragment <|-- CreateGameFragment
+AppCompatActivity <|-- MainActivity
+Fragment <|-- RoomInfoFragment
+AppCompatActivity <|-- UserProfileActivity
+AppCompatActivity <|-- ActiveGameActivity
+FragmentStateAdapter <|-- VPAdapter
+Room +.. Room$RoomCallback
+ConnectionsActivity <|-- ConnectFourActivity
+ConnectionsActivity <|-- TicTacToeActivity
+Fragment <|-- ArcadeFragment
+RVInterface <|.. ParticipantsListFragment
+Fragment <|-- ParticipantsListFragment
+Fragment <|-- AboutFragment
+Adapter <|-- RVUserAdapter
+RVUserAdapter +.. RVUserAdapter$UserAdapterViewHolder
+ViewHolder <|-- RVUserAdapter$UserAdapterViewHolder
+@enduml

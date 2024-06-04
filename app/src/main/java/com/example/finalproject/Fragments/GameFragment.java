@@ -22,8 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Activities.ActiveGameActivity;
 import com.example.finalproject.Adapters.RVRoomAdapter;
-import com.example.finalproject.Adapters.RVUserAdapter;
-import com.example.finalproject.Adapters.VPAdapterForFragment;
+import com.example.finalproject.Adapters.VPAdapter;
 import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
@@ -142,7 +141,7 @@ public class GameFragment extends Fragment implements RVInterface {
         ViewPager2 viewPager = createJoinGame.findViewById(R.id.viewPager);
 
         // Create the adapter
-        VPAdapterForFragment vpAdapter = new VPAdapterForFragment(getActivity());
+        VPAdapter vpAdapter = new VPAdapter(getActivity());
 
         // Create the fragments
         JoinGameFragment joinGameFragment = new JoinGameFragment();

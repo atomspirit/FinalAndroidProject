@@ -33,9 +33,6 @@ public abstract class FirebaseManager {
         return reference;
     }
 
-    public interface DataCallback {
-        void onDataReceived(String data);
-    }
     public static void uploadImageToFirebase(Uri imageUri,OnSuccessListener<String> onSuccessListener) {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();

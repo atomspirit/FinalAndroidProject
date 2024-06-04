@@ -103,7 +103,7 @@ public class JoinGameFragment extends Fragment {
                                         // Check if the user is already in the room
                                         if(!room.containsParticipant(user)){
                                             room.addParticipant(user);
-                                            room.updateParticipants(getContext());
+                                            room.updateParticipants();
                                         }
                                     }
                                 }
