@@ -105,6 +105,11 @@ public class JoinGameFragment extends Fragment {
                                             room.addParticipant(user);
                                             room.updateParticipants();
                                         }
+
+                                        // go to ActiveGameActivity
+                                        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+                                        intent.putExtra("room_code", roomCode);
+                                        getActivity().startActivity(intent);
                                     }
                                 }
                             });
@@ -115,10 +120,7 @@ public class JoinGameFragment extends Fragment {
 
 
 
-                    // go to ActiveGameActivity
-                    Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
-                    intent.putExtra("room_code", roomCode);
-                    getActivity().startActivity(intent);
+
 
                 } else {
                     etCode.setError("Room does not exist");

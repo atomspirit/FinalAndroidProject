@@ -5,24 +5,21 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Room {
     // Fields -------------------------------------------------------------------------------------
     private String code, name, description, URL;
-    private ArrayList<User> participants;
+    private ArrayList<String> participants;
     private User host;
 
     // Constructors -------------------------------------------------------------------------------
@@ -35,7 +32,7 @@ public class Room {
         this.description = description;
         this.URL = URL;
     }
-    public Room(String name, String code, User host,String description, ArrayList<User> participants, String URL) {
+    public Room(String name, String code, User host,String description, ArrayList<String> participants, String URL) {
         this.code = code;
         this.name = name;
         this.participants = participants;
@@ -69,11 +66,25 @@ public class Room {
         this.code = code;
     }
 
-    public ArrayList<User> getParticipants() {
-        return participants;
+    public void loadParticipants(OnLoadParticipants callback) {
+        ArrayList<User> users = new ArrayList<>();
+        if(participants.size() == 0) return;
+
+        Log.d("ROOM", participants.toString());
+        for (String username : participants)
+        {
+
+            User.createUserFromUsername(username, new User.UserCallback() {
+                @Override
+                public void onUserReceived(User user) {
+                    users.add(user);
+                    callback.onLoadedUser(users, user);
+                }
+            });
+        }
     }
 
-    public void setParticipants(ArrayList<User> participants) {
+    public void setParticipants(ArrayList<String> participants) {
         this.participants = participants;
     }
 
@@ -95,7 +106,7 @@ public class Room {
 
     // Methods ------------------------------------------------------------------------------------
     public void addParticipant(User user){
-        participants.add(user);
+        participants.add(user.getUsername());
     }
 
     public void updateParticipants(){
@@ -120,7 +131,7 @@ public class Room {
         });
     }
     public boolean containsParticipant(User user){
-        return participants.contains(user);
+        return participants.contains(user.getUsername());
     }
 
     static public void getCurrentRoom(Context context, RoomCallback callback) {
@@ -156,6 +167,7 @@ public class Room {
             }
         });
     }
+
     public void leave(User user){
 
         // Remove this room from user->rooms
@@ -164,7 +176,7 @@ public class Room {
 
         // Remove this user from room->participants
 
-        participants.remove(user);
+        participants.remove(user.getUsername());
         updateParticipants();
 
         if(participants.isEmpty())
@@ -177,10 +189,13 @@ public class Room {
         if(reference == null) return;
         reference.child(code).removeValue();
 
-        for(User user : participants)
-        {
-            user.removeRoom(this);
-        }
+        Room self = this;
+        loadParticipants(new OnLoadParticipants() {
+            @Override
+            public void onLoadedUser(ArrayList<User> usersSoFar, User currentUser) {
+                currentUser.removeRoom(self);
+            }
+        });
     }
 
 
@@ -191,10 +206,10 @@ public class Room {
         String description = snapshot.child("description").getValue(String.class);
         User host = User.fromSnapshot(snapshot.child("host"));
         String URL = snapshot.child("url").getValue(String.class);;
-        ArrayList<User> participants = new ArrayList<>();
+        ArrayList<String> participants = new ArrayList<>();
 
         for (DataSnapshot child : snapshot.child("participants").getChildren()) {
-            participants.add(User.fromSnapshot(child));
+            participants.add(child.getValue(String.class));
         }
 
 
@@ -232,4 +247,7 @@ public class Room {
         void onRoomReceived(Room room);
     }
 
+    public interface OnLoadParticipants {
+        void onLoadedUser(ArrayList<User> usersSoFar, User currentUser);
+    }
 }
