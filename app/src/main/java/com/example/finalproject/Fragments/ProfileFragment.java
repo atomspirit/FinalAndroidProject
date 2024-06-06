@@ -1,5 +1,6 @@
 package com.example.finalproject.Fragments;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.annotation.SuppressLint;
@@ -7,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,20 +16,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.finalproject.Activities.SignInActivity;
+import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.database.DatabaseReference;
+
+import java.io.UnsupportedEncodingException;
 
 public class ProfileFragment extends Fragment {
 
     TextView tvSignOut, tvUserEmail, tvUserPassword, tvUsername, tvBio;
     ShapeableImageView ivPicture;
+    String userImageURL;
+    Uri userImageUri;
+    User mUser;
 
 
     public ProfileFragment() {
@@ -75,20 +86,72 @@ public class ProfileFragment extends Fragment {
         User.getCurrentUser(requireContext(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
+                mUser = user;
                 tvUserEmail.setText("email: " + user.getEmail());
                 tvUserPassword.setText("password: " + user.getPassword());
                 tvUsername.setText(user.getUsername());
                 tvBio.setText(user.getBio());
+                userImageURL = user.getURL();
 
                 // Load the image from the URL using Glide
                 Glide.with(ProfileFragment.this)
                         .load(user.getURL())
                         .placeholder(R.drawable.ic_default_user)
                         .into(ivPicture);
+
+
+                ivPicture.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        changePhoto();
+                    }
+                });
             }
+
         });
     }
 
+    // Change Photo -------------------------------------------------------------------------------
+    private void changePhoto()
+    {
+        // open gallery and get new photo uri
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select A Photo"),321);
+
+        // delete old photo in storage
+        if(userImageURL != null) {
+            try {
+                FirebaseManager.deleteImage(userImageURL);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 321 && resultCode == RESULT_OK && data != null)
+        {
+            userImageUri = data.getData();
+            if(userImageUri != null)
+            {
+                // display new photo
+                ivPicture.setImageURI(userImageUri);
+                ivPicture.setBackground(null);
+
+                FirebaseManager.uploadImageToFirebase(userImageUri, new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String newURL) {
+                        DatabaseReference databaseReference = FirebaseManager.getReference("users");
+                        if(databaseReference != null)
+                            databaseReference.child(mUser.getUsername()).child("url").setValue(newURL);
+                    }
+                });
+            }
+        }
+    }
 
     // Sign Out -----------------------------------------------------------------------------------
     private void showSignOutDialog() {

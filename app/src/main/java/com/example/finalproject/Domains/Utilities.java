@@ -49,7 +49,7 @@ public class Utilities {
         if(text.isEmpty()){
             editText.setError(errorMessage);
             return false;
-        } else {
+        }  else {
             editText.setError(null);
             return true;
         }
@@ -59,6 +59,12 @@ public class Utilities {
         return validateEditText(etPassword, "Password is required");
     }
     public static Boolean validateUsername(EditText etUsername){
+        String text = String.valueOf(etUsername.getText());
+        if (text.contains(".") || text.contains("#") || text.contains("$")
+                || text.contains("[") || text.contains("]") || text.contains("/")) {
+            etUsername.setError("Cannot include '.','#','$','[',']' or '/");
+            return false;
+        }
         return validateEditText(etUsername, "User name is required");
     }
     public static Boolean validateEmail(EditText etEmail){

@@ -16,6 +16,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 public abstract class FirebaseManager {
@@ -59,4 +62,26 @@ public abstract class FirebaseManager {
             }
         });
     }
+    public static void deleteImage(String imageURl) throws UnsupportedEncodingException {
+        // Parse the URL to get the path
+        Uri uri = Uri.parse(imageURl);
+        String path = uri.getPath();
+
+        if (path != null) {
+            // The path includes a leading '/v0/b/<bucket>/o/', so we need to remove the leading '/o/'
+            int index = path.indexOf("/o/");
+            if (index != -1) {
+                String decodedPath = path.substring(index + 3);
+
+                // URL decode to handle special characters in paths
+                decodedPath = Uri.decode(decodedPath);
+
+                // Get a reference to the storage service using the default Firebase App
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                storage.getReference().child(decodedPath);
+
+            }
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.example.finalproject.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -24,11 +25,11 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
 
     ArrayList<User> participants;
     RecyclerView recyclerView;
+    RVUserAdapter adapter;
 
     public ParticipantsListFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,9 +38,8 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
 
         // Get the participants
         participants = new ArrayList<>();
-        populateParticipantsArray();
-
         recyclerView = view.findViewById(R.id.recyclerView);
+        setupAdapterWithRecyclerView();
 
         return view;
     }
@@ -50,19 +50,22 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
             public void onRoomReceived(Room room) {
                 if (room != null) {
                     participants = room.getParticipants();
-
-                    setupAdapterWithRecyclerView();
+                    adapter.updateUsers(participants);
                 }
             }
         });
     }
+
     private void setupAdapterWithRecyclerView() {
         // Set up the recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        RVUserAdapter adapter = new RVUserAdapter(getContext(), participants, this);
+        adapter = new RVUserAdapter(getContext(), participants, this);
         recyclerView.setAdapter(adapter);
+
+        // Populate participants array and update adapter
+        populateParticipantsArray();
     }
 
     @Override

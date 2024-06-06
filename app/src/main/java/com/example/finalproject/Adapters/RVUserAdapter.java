@@ -1,5 +1,6 @@
 package com.example.finalproject.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,10 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -28,6 +34,13 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
         this.context = context;
         this.users = users;
         this.rvInterface = rvInterface;
+    }
+    // Method to update the user list
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateUsers(ArrayList<User> newUsers) {
+        this.users.clear();
+        this.users.addAll(newUsers);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,9 +59,13 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
 
         holder.tvUserName.setText(users.get(position).getUsername());
         // Load the image from the URL using Glide
-        Glide.with(context) //problem here
+        long startTime = System.currentTimeMillis();
+        Log.d("IMAGE_LOAD", users.get(position).getURL());
+        Glide.with(context)
                 .load(users.get(position).getURL())
                 .placeholder(R.drawable.ic_default_user)
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable Glide disk caching
+                .skipMemoryCache(true) // Disable Glide memory caching
                 .into(holder.ivPlayerIcon);
     }
 
