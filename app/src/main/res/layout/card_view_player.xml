@@ -25,8 +25,8 @@
 
         <TextView
             android:id="@+id/tvUserName"
-            android:layout_width="120dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Name"
             android:fontFamily="@font/alegreya_sans"
             android:textColor="@color/primary"

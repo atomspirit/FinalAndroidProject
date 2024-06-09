@@ -10,10 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.finalproject.Adapters.VPAdapter;
@@ -25,13 +23,24 @@ import com.example.finalproject.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-public class ActiveGameActivity extends AppCompatActivity {
+public class ActiveRoomActivity extends AppCompatActivity {
+
+    /** ImageView for the back button. */
     ImageView ivBack;
+
+    /** TextView to display the game title. */
     TextView tvGameTitle;
+
+    /** Room object representing the current game room. */
     Room room;
+
+    /** ViewPager2 for managing tab navigation. */
     ViewPager2 viewPager;
+
+    /** TabLayout for displaying tabs. */
     TabLayout tabLayout;
 
+    /** Called when the activity is first created. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,25 +49,27 @@ public class ActiveGameActivity extends AppCompatActivity {
         initComponent();
         setupTabLayout();
     }
+
+    /**
+     * Initializes UI components and sets up event listeners.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    private void initComponent()
-    {
+    private void initComponent() {
         tvGameTitle = findViewById(R.id.tvGameTitle);
         ivBack = findViewById(R.id.ivBack);
+
         ivBack.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // Change text color on press
+                        // Change icon color on press
                         ivBack.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.primaryPressed));
                         finish();
                         return true;
                     case MotionEvent.ACTION_UP:
-                        // Change text color back on release
+                        // Change icon color back on release
                         ivBack.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.primary));
-
-
                         return true;
                 }
                 return false;
@@ -71,12 +82,11 @@ public class ActiveGameActivity extends AppCompatActivity {
         // Get an editor to edit SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Put the code the room code into the SharedPreferences with key "current_room"
+        // Put the room code into the SharedPreferences with key "current_room"
         editor.putString("current_room", getIntent().getStringExtra("room_code"));
 
         // Apply the changes
         editor.apply();
-
 
         Room.getCurrentRoom(getApplicationContext(), new Room.RoomCallback() {
             @Override
@@ -84,12 +94,17 @@ public class ActiveGameActivity extends AppCompatActivity {
                 Log.d("TAG", "received room name: " + room.getName());
                 if (room != null) {
                     tvGameTitle.setText(room.getName());
-                } else tvGameTitle.setText("null");
+                } else {
+                    tvGameTitle.setText("null");
+                }
             }
         });
     }
-    private void setupTabLayout()
-    {
+
+    /**
+     * Sets up the tab layout and ViewPager for navigating between different fragments.
+     */
+    private void setupTabLayout() {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
@@ -104,5 +119,4 @@ public class ActiveGameActivity extends AppCompatActivity {
             tab.setText(vpAdapter.getFragmentTitle(position));
         }).attach();
     }
-
 }

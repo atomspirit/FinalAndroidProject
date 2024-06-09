@@ -31,6 +31,10 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
     }
+
+    /**
+     * Initializes the UI components and sets their event listeners.
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void initComponent(User user){
         tvUsername = findViewById(R.id.tvUsername);

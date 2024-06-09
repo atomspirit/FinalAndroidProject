@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Activities.ActiveRoomActivity;
 import com.example.finalproject.Domains.FirebaseManager;
 import com.example.finalproject.Domains.Room;
 import com.example.finalproject.Domains.User;
@@ -24,7 +24,6 @@ import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -107,7 +106,7 @@ public class JoinGameFragment extends Fragment {
                                         }
 
                                         // go to ActiveGameActivity
-                                        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+                                        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveRoomActivity.class);
                                         intent.putExtra("room_code", roomCode);
                                         getActivity().startActivity(intent);
                                     }

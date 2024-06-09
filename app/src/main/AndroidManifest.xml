@@ -52,7 +52,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activities.ActiveGameActivity"
+            android:name=".Activities.ActiveRoomActivity"
             android:exported="false" />
     </application>
 

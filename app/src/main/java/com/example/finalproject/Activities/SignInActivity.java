@@ -19,24 +19,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.finalproject.Domains.FirebaseManager;
-import com.example.finalproject.Domains.Room;
-import com.example.finalproject.Domains.User;
 import com.example.finalproject.Domains.Utilities;
 import com.example.finalproject.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 
 public class SignInActivity extends AppCompatActivity {
 
-    EditText etUsername, etPassword;
-    TextView tvMoveToSignUp;
-    MotionLayout motionLayout;
-    Button btSignIn;
-
+    private EditText etUsername, etPassword;
+    private TextView tvMoveToSignUp;
+    private MotionLayout motionLayout;
+    private Button btSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +45,12 @@ public class SignInActivity extends AppCompatActivity {
         motionLayout.setTransitionListener(new MotionLayout.TransitionListener() {
             @Override
             public void onTransitionStarted(MotionLayout motionLayout, int startId, int endId) {
-
+                // No action needed here
             }
 
             @Override
             public void onTransitionChange(MotionLayout motionLayout, int startId, int endId, float progress) {
-
+                // No action needed here
             }
 
             @Override
@@ -65,13 +61,16 @@ public class SignInActivity extends AppCompatActivity {
 
             @Override
             public void onTransitionTrigger(MotionLayout motionLayout, int triggerId, boolean positive, float progress) {
-
+                // No action needed here
             }
         });
     }
+
+    /**
+     * Initializes the UI components and sets their event listeners.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    private void initComponents()
-    {
+    private void initComponents() {
         etPassword = findViewById(R.id.etPassword);
         etUsername = findViewById(R.id.etUsername);
         motionLayout = findViewById(R.id.motion_layout_login);
@@ -88,7 +87,6 @@ public class SignInActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_UP:
                         // Change text color back on release
                         tvMoveToSignUp.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.primary));
-
                         return true;
                 }
                 return false;
@@ -100,54 +98,53 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Utilities.hideKeyboard(getApplicationContext(), getCurrentFocus());
-                if(Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword)){
+                if (Utilities.validateUsername(etUsername) && Utilities.validatePassword(etPassword)) {
                     checkUser();
                 }
             }
         });
-
     }
 
-    private void checkIfUserAlreadySignedIn()
-    {
-        String current_username = getApplicationContext().getSharedPreferences("shared_pref",
-                Context.MODE_PRIVATE).getString("current_username", "");
-        Log.d("AAAA",current_username);
-        if(!current_username.equals("")){
+    /**
+     * Checks if a user is already signed in. If so, navigates to the main activity.
+     */
+    private void checkIfUserAlreadySignedIn() {
+        String currentUsername = getApplicationContext().getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_username", "");
+        Log.d("SignInActivity", "Current user: " + currentUsername);
+        if (!currentUsername.equals("")) {
             startActivity(new Intent(this, MainActivity.class));
         }
     }
 
-
-    public void checkUser(){
-        String username=etUsername.getText().toString().trim();
-        String password=etPassword.getText().toString().trim();
+    /**
+     * Checks the entered username and password against the database and logs in the user if the
+     * credentials are correct.
+     */
+    public void checkUser() {
+        String username = etUsername.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
         DatabaseReference reference = FirebaseManager.getReference("users");
-        if(reference == null){
+        if (reference == null) {
             etUsername.setError("User does not exist");
             return;
         }
 
-        Query query=reference.orderByChild("username").equalTo(username);
+        Query query = reference.orderByChild("username").equalTo(username);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     etUsername.setError(null);
-                    String passFromDB=snapshot.child(username).child("password").getValue(String.class);
-                    if(passFromDB.equals(password)){
+                    String passFromDB = snapshot.child(username).child("password").getValue(String.class);
+                    if (passFromDB.equals(password)) {
                         etUsername.setError(null);
-                        getApplicationContext();
                         SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("shared_pref", MODE_PRIVATE);
-                        SharedPreferences.Editor editor=sharedPreferences.edit();
-                        editor.putString("current_username",username);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("current_username", username);
                         editor.apply();
-
                         motionLayout.transitionToEnd();
-
                     } else {
                         etPassword.setError("Wrong password");
                         etPassword.requestFocus();
@@ -160,9 +157,8 @@ public class SignInActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle database error
             }
         });
     }
-
 }

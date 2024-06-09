@@ -8,9 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.finalproject.Activities.ActiveGameActivity;
+import com.example.finalproject.Activities.ActiveRoomActivity;
 import com.example.finalproject.Adapters.RVRoomAdapter;
 import com.example.finalproject.Adapters.VPAdapter;
 import com.example.finalproject.Domains.FirebaseManager;
@@ -34,11 +32,9 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class GameFragment extends Fragment implements RVInterface {
 
@@ -201,7 +197,7 @@ public class GameFragment extends Fragment implements RVInterface {
 
     @Override
     public void onItemClicked(int position) {
-        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveGameActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), ActiveRoomActivity.class);
         intent.putExtra("room_code", games.get(position).getCode());
         getActivity().startActivity(intent);
     }

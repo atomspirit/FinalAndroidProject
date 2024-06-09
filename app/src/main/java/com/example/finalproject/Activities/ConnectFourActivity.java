@@ -39,9 +39,7 @@ public class ConnectFourActivity extends ConnectionsActivity {
     private TextView tvScoreBlack,tvScoreWhite, tvLog;
     LinearLayout gameLayout;
 
-
     private static final String RESET_KEY_WORD = "reset";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,43 +100,72 @@ public class ConnectFourActivity extends ConnectionsActivity {
     }
 
     // -------------- Connecting logic --------------
+
+    /**
+     * Returns the name of the current user.
+     * @return The username of the current user.
+     */
     @Override
     protected String getName() {
         return username;
     }
 
+    /**
+     * Returns the service ID used for the connection.
+     * @return The service ID which is a combination of the room code and "connect_four".
+     */
     @Override
     protected String getServiceId() {
         return roomCode + ".connect_four";
     }
 
+    /**
+     * Returns the strategy used for the connection.
+     * @return The P2P_STAR strategy for the connection.
+     */
     @Override
     protected Strategy getStrategy() {
         return Strategy.P2P_STAR;
     }
 
+    /**
+     * Callback for when advertising starts successfully.
+     */
     @Override
     protected void onAdvertisingStarted() {
         Log.d(TAG, "Advertising started successfully.");
     }
 
+    /**
+     * Callback for when advertising fails to start.
+     */
     @Override
     protected void onAdvertisingFailed() {
         Log.d(TAG, "Advertising failed to start.");
         Toast.makeText(getApplicationContext(),"something went wrong. Try again", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Callback for when discovery starts successfully.
+     */
     @Override
     protected void onDiscoveryStarted() {
         Log.d(TAG, "Discovery started successfully.");
     }
 
+    /**
+     * Callback for when discovery fails to start.
+     */
     @Override
     protected void onDiscoveryFailed() {
         Log.d(TAG, "Discovery failed to start.");
         Toast.makeText(getApplicationContext(),"something went wrong. Try again", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Callback for when an endpoint is discovered.
+     * @param endpoint The discovered endpoint.
+     */
     @Override
     protected void onEndpointDiscovered(Endpoint endpoint) {
         Log.d(TAG, "Endpoint discovered: " + endpoint.getName());
@@ -146,24 +173,42 @@ public class ConnectFourActivity extends ConnectionsActivity {
             connectToEndpoint(endpoint);
     }
 
+    /**
+     * Callback for when an endpoint is connected.
+     * @param endpoint The connected endpoint.
+     */
     @Override
     protected void onEndpointConnected(Endpoint endpoint) {
         Log.d(TAG, "Connected to endpoint: " + endpoint.getName());
         startGame(endpoint);
     }
 
+    /**
+     * Callback for when an endpoint is disconnected.
+     * @param endpoint The disconnected endpoint.
+     */
     @Override
     protected void onEndpointDisconnected(Endpoint endpoint) {
         Log.d(TAG, "Disconnected from endpoint: " + endpoint.getName());
         logText("Disconnected");
     }
 
+    /**
+     * Callback for when a connection is initiated with an endpoint.
+     * @param endpoint The endpoint with which the connection is initiated.
+     * @param connectionInfo Information about the connection.
+     */
     @Override
     protected void onConnectionInitiated(Endpoint endpoint, ConnectionInfo connectionInfo) {
         if(!username.equals(endpoint.getName()))
             acceptConnection(endpoint);
     }
 
+    /**
+     * Callback for when a payload is received from an endpoint.
+     * @param endpoint The endpoint from which the payload is received.
+     * @param payload The received payload.
+     */
     @Override
     protected void onReceive(Endpoint endpoint, Payload payload) {
         String move = new String(payload.asBytes(), StandardCharsets.UTF_8);
@@ -191,6 +236,9 @@ public class ConnectFourActivity extends ConnectionsActivity {
 
     // -------------- Turn based logic --------------
 
+    /**
+     * Initializes the game grid with buttons and sets up click listeners for each button.
+     */
     private void initializeGrid() {
         GridLayout gridLayout = findViewById(R.id.gridLayout);
         for (int row = 0; row < ROWS; row++) {
@@ -209,6 +257,11 @@ public class ConnectFourActivity extends ConnectionsActivity {
         }
     }
 
+    /**
+     * Handles button clicks on the game grid.
+     * @param row The row of the clicked button.
+     * @param col The column of the clicked button.
+     */
     private void onGridButtonClick(int row, int col) {
         if (!isMyTurn) {
             Toast.makeText(this, "Wait for your turn", Toast.LENGTH_SHORT).show();
@@ -231,10 +284,14 @@ public class ConnectFourActivity extends ConnectionsActivity {
             isXTurn = !isXTurn;
             isMyTurn = !isMyTurn;
             sendMoveToOpponent(emptyRow, col,symbol);
-
         }
     }
 
+    /**
+     * Returns the first empty row in the specified column.
+     * @param col The column to check.
+     * @return The first empty row, or -1 if the column is full.
+     */
     private int getEmptyRow(int col) {
         for (int row = ROWS - 1; row >= 0; row--) {
             if (board[row][col] == null) {
@@ -243,6 +300,13 @@ public class ConnectFourActivity extends ConnectionsActivity {
         }
         return -1;
     }
+
+    /**
+     * Checks the winning conditions and updates the score and logs accordingly.
+     * @param emptyRow The row of the last move.
+     * @param col The column of the last move.
+     * @param symbol The symbol of the last move.
+     */
     private void winningLogic(int emptyRow, int col, String symbol)
     {
         if (checkWin(emptyRow, col)) {
@@ -267,7 +331,12 @@ public class ConnectFourActivity extends ConnectionsActivity {
         }
     }
 
-
+    /**
+     * Checks if there is a winning sequence starting from the specified cell.
+     * @param row The starting row.
+     * @param col The starting column.
+     * @return True if there is a winning sequence, false otherwise.
+     */
     private boolean checkWin(int row, int col) {
         String player = board[row][col];
         // Check horizontal, vertical, and both diagonals
@@ -277,6 +346,15 @@ public class ConnectFourActivity extends ConnectionsActivity {
                 checkDirection(row, col, 1, -1, player);  // Diagonal /
     }
 
+    /**
+     * Checks if there is a winning sequence in a specific direction.
+     * @param row The starting row.
+     * @param col The starting column.
+     * @param dRow The row direction.
+     * @param dCol The column direction.
+     * @param player The player symbol to check for.
+     * @return True if there is a winning sequence, false otherwise.
+     */
     private boolean checkDirection(int row, int col, int dRow, int dCol, String player) {
         int count = 0;
         for (int i = -3; i <= 3; i++) {
@@ -294,6 +372,10 @@ public class ConnectFourActivity extends ConnectionsActivity {
         return false;
     }
 
+    /**
+     * Checks if the game board is full.
+     * @return True if the board is full, false otherwise.
+     */
     private boolean isBoardFull() {
         for (int col = 0; col < COLS; col++) {
             if (board[0][col] == null) {
@@ -303,16 +385,30 @@ public class ConnectFourActivity extends ConnectionsActivity {
         return true;
     }
 
+    /**
+     * Sends the move to the opponent.
+     * @param row The row of the move.
+     * @param col The column of the move.
+     * @param symbol The symbol of the move.
+     */
     private void sendMoveToOpponent(int row, int col, String symbol) {
         String move = row + "," + col + "," + symbol;
         Payload payload = Payload.fromBytes(move.getBytes(StandardCharsets.UTF_8));
         send(payload);
     }
 
+    /**
+     * Logs text to the log TextView.
+     * @param text The text to log.
+     */
     private void logText(String text) {
         tvLog.setText(tvLog.getText() + text + "\n");
     }
 
+    /**
+     * Resets the game board and optionally sends a reset payload to the opponent.
+     * @param isInitiated True if the reset is initiated by the current player, false otherwise.
+     */
     private void resetGame(boolean isInitiated) {
         initializeGrid();
 
@@ -321,6 +417,11 @@ public class ConnectFourActivity extends ConnectionsActivity {
             send(payload);
         }
     }
+
+    /**
+     * Locks the game board by disabling all buttons.
+     * @return True when the board is successfully locked.
+     */
     private boolean lockBoard()
     {
         for(int i = 0; i < ROWS; i++)
@@ -332,6 +433,11 @@ public class ConnectFourActivity extends ConnectionsActivity {
         }
         return true;
     }
+
+    /**
+     * Starts the game by setting up the initial state and hiding unnecessary UI elements.
+     * @param opponent The connected opponent endpoint.
+     */
     private void startGame(Endpoint opponent) {
         isMyTurn = isAdvertising();
         logText("Game started. Opponent: " + opponent.getName());
@@ -340,12 +446,19 @@ public class ConnectFourActivity extends ConnectionsActivity {
         gameLayout.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Ends the game by stopping advertising/discovering and disconnecting from all endpoints.
+     */
     private void endGame() {
         if (isAdvertising()) stopAdvertising();
         if (isDiscovering()) stopDiscovering();
         disconnectFromAllEndpoints();
         finish();
     }
+
+    /**
+     * Ensures all connections are properly closed when the activity is destroyed.
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
