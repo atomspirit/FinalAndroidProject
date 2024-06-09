@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">NearbyArcade</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about">Hello, I\'m Yoav Dagan, the developer of this app.\nI build this app as part of my final year software  engineering project.\n\nI choose this project because of my passion to game development.\n\nSome statistics about the project:\nI wrote 4164 line of code\nAnd 2473 lines of ui code\n236 functions\n\nHope you\'ll enjoy my project!</string>
 </resources>

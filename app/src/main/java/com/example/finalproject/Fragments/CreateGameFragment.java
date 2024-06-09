@@ -35,6 +35,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class CreateGameFragment extends Fragment  {
 
     EditText etCode, etName, etDesc;
@@ -116,7 +120,9 @@ public class CreateGameFragment extends Fragment  {
         User.getCurrentUser(getActivity(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
-                Room room = new Room(roomName, roomCode, user, roomDesc,roomImageURL);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                String date =  formatter.format(new Date());
+                Room room = new Room(roomName, roomCode, user, roomDesc,roomImageURL,date);
                 compareRoom(room);
             }
         });

@@ -94,7 +94,7 @@ public class RoomInfoFragment extends Fragment {
             @Override
             public void onRoomReceived(Room room) {
                 tvRoomCode.setText("Room code: " + room.getCode());
-                // TODO: add date
+                tvCreationDate.setText("Created on: " + room.getCreationDate());
             }
         });
 

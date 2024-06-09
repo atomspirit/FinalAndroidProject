@@ -55,7 +55,7 @@ public class JoinGameFragment extends Fragment {
                     Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
                     checkRoom();
                     if (fragmentInteractionListener != null)
-                        fragmentInteractionListener.onButtonClicked(); // TODO: fix bug - null arg
+                        fragmentInteractionListener.onButtonClicked();
                 }
             }
         });

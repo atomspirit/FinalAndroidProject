@@ -12,18 +12,23 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class Room {
     // Fields -------------------------------------------------------------------------------------
-    private String code, name, description, URL;
+    private String code, name, description, URL, creationDate;
     private ArrayList<String> participants;
     private User host;
 
     // Constructors -------------------------------------------------------------------------------
-    public Room(String name, String code, User host, String description,String URL) {
+    public Room(String name, String code, User host, String description,String URL,
+                String creationDate) {
         this.code = code;
         this.name = name;
         this.participants = new ArrayList<>();
@@ -31,14 +36,17 @@ public class Room {
         this.host = host;
         this.description = description;
         this.URL = URL;
+        this.creationDate = creationDate;
     }
-    public Room(String name, String code, User host,String description, ArrayList<String> participants, String URL) {
+    public Room(String name, String code, User host,String description,
+                ArrayList<String> participants, String URL, String creationDate) {
         this.code = code;
         this.name = name;
         this.participants = participants;
         this.host = host;
         this.description = description;
         this.URL = URL;
+        this.creationDate = creationDate;
     }
 
     // Getters and setters ------------------------------------------------------------------------
@@ -102,6 +110,14 @@ public class Room {
 
     public void setURL(String URL) {
         this.URL = URL;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
     }
 
     // Methods ------------------------------------------------------------------------------------
@@ -206,6 +222,7 @@ public class Room {
         String description = snapshot.child("description").getValue(String.class);
         User host = User.fromSnapshot(snapshot.child("host"));
         String URL = snapshot.child("url").getValue(String.class);;
+        String creationDate = snapshot.child("creation date").getValue(String.class);
         ArrayList<String> participants = new ArrayList<>();
 
         for (DataSnapshot child : snapshot.child("participants").getChildren()) {
@@ -213,7 +230,7 @@ public class Room {
         }
 
 
-        Room room = new Room(name,code, host,description,participants,URL);
+        Room room = new Room(name,code, host,description,participants,URL,creationDate);
 
         return room;
     }
@@ -228,6 +245,7 @@ public class Room {
                 ", participants=" + participants +
                 ", host=" + host +
                 ", url=" + getURL() +
+                ", creation date=" + getCreationDate() +
                 '}';
     }
 
@@ -239,6 +257,7 @@ public class Room {
         result.put("host", host.toMap());
         result.put("description", description);
         result.put("url", getURL());
+        result.put("creation date", getCreationDate());
         return result;
     }
 
