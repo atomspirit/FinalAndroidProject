@@ -27,21 +27,32 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * A fragment that allows the user to join an existing game room by entering a room code.
+ */
 public class JoinGameFragment extends Fragment {
 
-    EditText etCode;
-    Button btJoin;
+    private EditText etCode;
+    private Button btJoin;
     private FragmentInteractionListener fragmentInteractionListener;
 
-
-
+    /**
+     * Default constructor for JoinGameFragment.
+     */
     public JoinGameFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the layout for this fragment and sets up the UI elements and event listeners.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_join_game, container, false);
 
@@ -50,7 +61,7 @@ public class JoinGameFragment extends Fragment {
         btJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(Utilities.validateEditText(etCode, "Room code is required")){
+                if (Utilities.validateEditText(etCode, "Room code is required")) {
                     Utilities.hideKeyboard(getContext(), getActivity().getCurrentFocus());
                     checkRoom();
                     if (fragmentInteractionListener != null)
@@ -62,21 +73,23 @@ public class JoinGameFragment extends Fragment {
         return v;
     }
 
-    public void checkRoom(){
+    /**
+     * Checks if the room with the given code exists and adds the current user to the room.
+     */
+    public void checkRoom() {
         String roomCode = etCode.getText().toString().trim().toUpperCase();
 
         DatabaseReference reference = FirebaseManager.getReference("rooms");
-        if(reference == null){
+        if (reference == null) {
             etCode.setError("Room does not exist");
             return;
         }
-        Query query=reference.orderByChild("code").equalTo(roomCode);
+        Query query = reference.orderByChild("code").equalTo(roomCode);
 
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     etCode.setError(null);
 
                     // Create or access the shared preferences
@@ -85,7 +98,7 @@ public class JoinGameFragment extends Fragment {
                     // Get an editor to edit SharedPreferences
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    // Put the code the room code into the SharedPreferences with key "current_room"
+                    // Put the room code into the SharedPreferences with key "current_room"
                     editor.putString("current_room", roomCode);
 
                     // Apply the changes
@@ -94,18 +107,17 @@ public class JoinGameFragment extends Fragment {
                     User.getCurrentUser(getContext(), new User.UserCallback() {
                         @Override
                         public void onUserReceived(User user) {
-
                             Room.getCurrentRoom(getContext(), new Room.RoomCallback() {
                                 @Override
                                 public void onRoomReceived(Room room) {
-                                    if(room != null){
+                                    if (room != null) {
                                         // Check if the user is already in the room
-                                        if(!room.containsParticipant(user)){
+                                        if (!room.containsParticipant(user)) {
                                             room.addParticipant(user);
                                             room.updateParticipants();
                                         }
 
-                                        // go to ActiveGameActivity
+                                        // Go to ActiveRoomActivity
                                         Intent intent = new Intent(getActivity().getApplicationContext(), ActiveRoomActivity.class);
                                         intent.putExtra("room_code", roomCode);
                                         getActivity().startActivity(intent);
@@ -115,12 +127,6 @@ public class JoinGameFragment extends Fragment {
                             User.addToRoom(user.getUsername(), roomCode);
                         }
                     });
-
-
-
-
-
-
                 } else {
                     etCode.setError("Room does not exist");
                     etCode.requestFocus();
@@ -129,10 +135,16 @@ public class JoinGameFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                // Handle database error
             }
         });
     }
+
+    /**
+     * Sets the interaction listener for this fragment.
+     *
+     * @param fragmentInteractionListener The interaction listener to be set.
+     */
     public void setFragmentInteractionListener(FragmentInteractionListener fragmentInteractionListener) {
         this.fragmentInteractionListener = fragmentInteractionListener;
     }

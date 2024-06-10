@@ -36,25 +36,39 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+/**
+ * A fragment that displays a list of game rooms and allows the user to create or join a game.
+ */
 public class GameFragment extends Fragment implements RVInterface {
 
+    private ImageView ivAddGame;
+    private TextView tvEmptyRooms;
+    private RecyclerView recyclerView;
+    private ArrayList<Room> games;
+    private Dialog createJoinGame;
 
-    ImageView ivAddGame;
-    TextView tvEmptyRooms;
-    RecyclerView recyclerView;
-    ArrayList<Room> games;
-    Dialog createJoinGame;
-
+    /**
+     * Default constructor for GameFragment.
+     */
     public GameFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the layout for this fragment and sets up the UI elements and event listeners.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_game, container, false);
         initComponent(v);
 
+        // Load rooms for the current user
         User.getCurrentUser(getContext(), new User.UserCallback() {
             @Override
             public void onUserReceived(User user) {
@@ -67,7 +81,7 @@ public class GameFragment extends Fragment implements RVInterface {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                        // Handle database error
                     }
                 });
             }
@@ -76,11 +90,13 @@ public class GameFragment extends Fragment implements RVInterface {
         return v;
     }
 
-
-
+    /**
+     * Initializes UI components and sets up event listeners.
+     *
+     * @param view The parent view that the fragment's UI should be attached to.
+     */
     @SuppressLint("ClickableViewAccessibility")
-    private void initComponent(View view)
-    {
+    private void initComponent(View view) {
         games = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerView);
         tvEmptyRooms = view.findViewById(R.id.tvEmptyRooms);
@@ -91,59 +107,66 @@ public class GameFragment extends Fragment implements RVInterface {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        // Change text color on press
-                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(),R.color.primaryPressed));
+                        // Change icon color on press
+                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(), R.color.primaryPressed));
                         showPopup();
                         return true;
                     case MotionEvent.ACTION_UP:
-                        // Change text color back on release
-                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(),R.color.primary));
-
-
+                        // Change icon color back on release
+                        ivAddGame.setColorFilter(ContextCompat.getColor(getContext(), R.color.primary));
                         return true;
                 }
                 return false;
             }
         });
         createJoinGame = new Dialog(view.getContext());
-
     }
 
-    public void addGame(Room room)
-    {
+    /**
+     * Adds a game room to the list and updates the RecyclerView.
+     *
+     * @param room The room to be added.
+     */
+    public void addGame(Room room) {
         games.add(room);
         setupAdapterWithRecyclerView();
-
     }
-    public void clearGames()
-    {
+
+    /**
+     * Clears the list of game rooms and updates the RecyclerView.
+     */
+    public void clearGames() {
         games.clear();
         setupAdapterWithRecyclerView();
     }
+
+    /**
+     * Sets up the RecyclerView with the appropriate adapter and layout manager.
+     */
     private void setupAdapterWithRecyclerView() {
-        // Set up the recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         RVRoomAdapter adapter = new RVRoomAdapter(getContext(), games, this);
         recyclerView.setAdapter(adapter);
     }
-    private void showPopup()
-    {
-        // Create the dialog
+
+    /**
+     * Displays a popup dialog for creating or joining a game.
+     */
+    private void showPopup() {
         createJoinGame.setContentView(R.layout.dialog_create_join_game);
 
         TabLayout tabLayout = createJoinGame.findViewById(R.id.tabLayout);
         ViewPager2 viewPager = createJoinGame.findViewById(R.id.viewPager);
 
-        // Create the adapter
         VPAdapter vpAdapter = new VPAdapter(getActivity());
 
         // Create the fragments
         JoinGameFragment joinGameFragment = new JoinGameFragment();
         CreateGameFragment createGameFragment = new CreateGameFragment();
 
-        // Pass FragmentInteractionListener to the fragments
+        // Set interaction listeners for the fragments
         joinGameFragment.setFragmentInteractionListener(new FragmentInteractionListener() {
             @Override
             public void onButtonClicked() {
@@ -157,12 +180,12 @@ public class GameFragment extends Fragment implements RVInterface {
             }
         });
 
-        // Add the fragments
+        // Add the fragments to the adapter
         vpAdapter.addFragment(joinGameFragment, "Join");
         vpAdapter.addFragment(createGameFragment, "Create");
         viewPager.setAdapter(vpAdapter);
 
-        // Use TabLayoutMediator to connect TabLayout with ViewPager2
+        // Attach TabLayout to ViewPager2
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             tab.setText(vpAdapter.getFragmentTitle(position));
         }).attach();
@@ -170,6 +193,12 @@ public class GameFragment extends Fragment implements RVInterface {
         createJoinGame.show();
         createJoinGame.setCancelable(true);
     }
+
+    /**
+     * Loads the rooms from the database and updates the UI.
+     *
+     * @param snapshot The DataSnapshot containing the room data.
+     */
     private void loadRooms(DataSnapshot snapshot) {
         clearGames();
         boolean isEmpty = true;
@@ -179,22 +208,25 @@ public class GameFragment extends Fragment implements RVInterface {
             Room.createRoomFromCode(code, new Room.RoomCallback() {
                 @Override
                 public void onRoomReceived(Room room) {
-                    if(room != null)
+                    if (room != null)
                         addGame(room);
                 }
             });
         }
-        if (isEmpty)
-        {
+        if (isEmpty) {
             tvEmptyRooms.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             tvEmptyRooms.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
+    /**
+     * Handles item click events in the RecyclerView.
+     *
+     * @param position The position of the clicked item.
+     */
     @Override
     public void onItemClicked(int position) {
         Intent intent = new Intent(getActivity().getApplicationContext(), ActiveRoomActivity.class);

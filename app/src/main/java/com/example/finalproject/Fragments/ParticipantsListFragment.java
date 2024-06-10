@@ -24,22 +24,35 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
+/**
+ * A fragment that displays a list of participants in the current room.
+ */
 public class ParticipantsListFragment extends Fragment implements RVInterface {
 
-    ArrayList<User> participants;
-    RecyclerView recyclerView;
-    RVUserAdapter adapter;
+    private ArrayList<User> participants;
+    private RecyclerView recyclerView;
+    private RVUserAdapter adapter;
 
+    /**
+     * Default constructor for ParticipantsListFragment.
+     */
     public ParticipantsListFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * Inflates the layout for this fragment and sets up the RecyclerView and adapter.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          The parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_participants_list, container, false);
 
-        // Get the participants
+        // Initialize participants list and RecyclerView
         participants = new ArrayList<>();
         recyclerView = view.findViewById(R.id.recyclerView);
         setupAdapterWithRecyclerView();
@@ -47,6 +60,9 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
         return view;
     }
 
+    /**
+     * Populates the participants array with users from the current room.
+     */
     private void populateParticipantsArray() {
         Room.getCurrentRoom(getActivity(), new Room.RoomCallback() {
             @Override
@@ -64,8 +80,11 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
         });
     }
 
+    /**
+     * Sets up the RecyclerView and its adapter.
+     */
     private void setupAdapterWithRecyclerView() {
-        // Set up the recycler view
+        // Set up the RecyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
@@ -76,12 +95,16 @@ public class ParticipantsListFragment extends Fragment implements RVInterface {
         populateParticipantsArray();
     }
 
+    /**
+     * Handles item clicks in the RecyclerView.
+     *
+     * @param position The position of the clicked item.
+     */
     @Override
     public void onItemClicked(int position) {
-        String current_username = getActivity().getSharedPreferences("shared_pref",
-                Context.MODE_PRIVATE).getString("current_username", "");
-        if(participants.get(position).getUsername().equals(current_username)) {
-            Toast.makeText(getContext(),"This is you!", Toast.LENGTH_SHORT).show();
+        String currentUsername = getActivity().getSharedPreferences("shared_pref", Context.MODE_PRIVATE).getString("current_username", "");
+        if (participants.get(position).getUsername().equals(currentUsername)) {
+            Toast.makeText(getContext(), "This is you!", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent(getContext(), UserProfileActivity.class);

@@ -17,25 +17,36 @@ import com.example.finalproject.Domains.User;
 import com.example.finalproject.Interfaces.RVInterface;
 import com.example.finalproject.R;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter class for displaying User objects in a RecyclerView.
+ */
 public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapterViewHolder> {
 
-    Context context;
-    ArrayList<User> users;
-    RVInterface rvInterface;
+    private Context context;
+    private ArrayList<User> users;
+    private RVInterface rvInterface;
 
-    public RVUserAdapter(Context context, ArrayList<User> users,RVInterface rvInterface) {
+    /**
+     * Constructor for the adapter.
+     *
+     * @param context     The context in which the adapter is used.
+     * @param users       The list of User objects to display.
+     * @param rvInterface The interface for handling click events on the RecyclerView items.
+     */
+    public RVUserAdapter(Context context, ArrayList<User> users, RVInterface rvInterface) {
         this.context = context;
         this.users = users;
         this.rvInterface = rvInterface;
     }
-    // Method to update the user list
+
+    /**
+     * Method to update the user list in the adapter.
+     *
+     * @param newUsers The new list of User objects to display.
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void updateUsers(ArrayList<User> newUsers) {
         this.users.clear();
@@ -43,6 +54,13 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
         notifyDataSetChanged();
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link UserAdapterViewHolder} of the given type to represent an item.
+     *
+     * @param parent   The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new UserAdapterViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public RVUserAdapter.UserAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,11 +70,15 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
         return new UserAdapterViewHolder(view, rvInterface);
     }
 
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder   The ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull RVUserAdapter.UserAdapterViewHolder holder, int position) {
-        // assigning values to the views in the layout
-        // based on the position of the recycler view
-
+        // Assigning values to the views in the layout based on the position of the RecyclerView
         holder.tvUserName.setText(users.get(position).getUsername());
         // Load the image from the URL using Glide
         long startTime = System.currentTimeMillis();
@@ -69,18 +91,29 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
                 .into(holder.ivPlayerIcon);
     }
 
+    /**
+     * Returns the total number of items to display in the RecyclerView.
+     *
+     * @return The total number of items in the data set held by the adapter.
+     */
     @Override
     public int getItemCount() {
-        // return the total number of items to display
         return users.size();
     }
 
+    /**
+     * ViewHolder class for holding the views for each item in the RecyclerView.
+     */
     public static class UserAdapterViewHolder extends RecyclerView.ViewHolder {
-        // grabbing the views from the layout
-
         ShapeableImageView ivPlayerIcon;
         TextView tvUserName;
 
+        /**
+         * Constructor for the ViewHolder.
+         *
+         * @param itemView    The view of the item.
+         * @param rvInterface The interface for handling click events on the RecyclerView items.
+         */
         public UserAdapterViewHolder(@NonNull View itemView, RVInterface rvInterface) {
             super(itemView);
 
@@ -90,11 +123,11 @@ public class RVUserAdapter extends RecyclerView.Adapter<RVUserAdapter.UserAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(rvInterface != null)
-                    {
+                    if (rvInterface != null) {
                         int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION)
+                        if (pos != RecyclerView.NO_POSITION) {
                             rvInterface.onItemClicked(pos);
+                        }
                     }
                 }
             });
