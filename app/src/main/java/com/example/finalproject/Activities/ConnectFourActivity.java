@@ -133,6 +133,7 @@ public class ConnectFourActivity extends ConnectionsActivity {
      */
     @Override
     protected void onAdvertisingStarted() {
+        disconnectFromAllEndpoints();
         Log.d(TAG, "Advertising started successfully.");
     }
 
@@ -150,6 +151,7 @@ public class ConnectFourActivity extends ConnectionsActivity {
      */
     @Override
     protected void onDiscoveryStarted() {
+        disconnectFromAllEndpoints();
         Log.d(TAG, "Discovery started successfully.");
     }
 
